@@ -1,0 +1,3556 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>NF DLP 2 · Защищённый обмен с ИИ</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #11141a;
+      --ink-soft: #252a34;
+      --paper: #ffffff;
+      --wash: #f1f3f6;
+      --wash-deep: #e8ebf0;
+      --line: #d8dde6;
+      --muted: #667085;
+      --muted-light: #98a2b3;
+      --red: #e31722;
+      --red-dark: #ad1018;
+      --red-wash: #fff0f1;
+      --green: #13845a;
+      --green-wash: #eaf8f2;
+      --amber: #c86c08;
+      --amber-wash: #fff5e7;
+      --shadow: 0 18px 60px rgba(17, 20, 26, 0.09);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 11px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 84% 3%, rgba(227, 23, 34, 0.08), transparent 26rem),
+        var(--wash);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    button,
+    textarea,
+    input { font: inherit; }
+
+    button { -webkit-tap-highlight-color: transparent; }
+
+    button:focus-visible,
+    textarea:focus-visible,
+    input:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid rgba(227, 23, 34, 0.28);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--red);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 950;
+      letter-spacing: -0.04em;
+      box-shadow: 0 10px 24px rgba(227, 23, 34, 0.24);
+    }
+
+    .brand-copy strong,
+    .brand-copy span { display: block; }
+
+    .brand-copy strong {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-copy span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .offline-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 13px;
+      border: 1px solid #a9ddc8;
+      border-radius: 999px;
+      background: var(--green-wash);
+      color: #0c6845;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .offline-badge::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(19, 132, 90, 0.12);
+      content: "";
+      animation: localPulse 2.4s ease-in-out infinite;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 38px 40px 30px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(130deg, #101318 0%, #1a1f28 72%, #351116 100%);
+      color: #fff;
+      box-shadow: 0 24px 70px rgba(17, 20, 26, 0.2);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -12px;
+      bottom: -46px;
+      color: rgba(255, 255, 255, 0.038);
+      font-size: clamp(88px, 13vw, 180px);
+      font-weight: 950;
+      letter-spacing: -0.09em;
+      content: "DLP";
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      color: #ff747c;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 32px;
+      height: 3px;
+      background: var(--red);
+      content: "";
+    }
+
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 920px;
+      margin: 0;
+      font-size: clamp(34px, 5vw, 66px);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+    }
+
+    .hero-lead {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 20px 0 0;
+      color: #c6ccd5;
+      font-size: clamp(14px, 1.5vw, 17px);
+    }
+
+    .flowline {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 30px;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 11px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #e7eaf0;
+      font-size: 12px;
+      font-weight: 750;
+      backdrop-filter: blur(6px);
+    }
+
+    .flow-step b {
+      display: grid;
+      flex: 0 0 24px;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      border-radius: 7px;
+      background: var(--red);
+      color: #fff;
+      font-size: 11px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+      gap: 18px;
+      margin-top: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .input-panel { padding: 24px; }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 17px;
+    }
+
+    .section-kicker {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    h2,
+    h3,
+    p { margin-top: 0; }
+
+    .panel-header h2 {
+      margin-bottom: 0;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+
+    .text-button {
+      padding: 8px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--red-dark);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 14px;
+    }
+
+    .textarea-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    #sourceText,
+    #sanitizedText {
+      display: block;
+      width: 100%;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fbfcfd;
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.58;
+    }
+
+    #sourceText {
+      min-height: 295px;
+      padding: 17px 17px 42px;
+    }
+
+    #sourceText::placeholder { color: #8f98a8; }
+
+    .char-counter {
+      position: absolute;
+      right: 12px;
+      bottom: 10px;
+      padding: 3px 7px;
+      border-radius: 7px;
+      background: rgba(241, 243, 246, 0.92);
+      color: var(--muted);
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .drop-zone {
+      display: grid;
+      min-height: 295px;
+      padding: 22px 16px;
+      place-items: center;
+      border: 1.5px dashed #b7bfcb;
+      border-radius: var(--radius-md);
+      background: linear-gradient(145deg, #f8f9fb, #f1f3f6);
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.is-dragging {
+      border-color: var(--red);
+      background: var(--red-wash);
+      transform: translateY(-2px);
+    }
+
+    .drop-zone-icon {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 14px;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--ink);
+      color: #fff;
+      font-size: 23px;
+      font-weight: 300;
+      box-shadow: 0 12px 26px rgba(17, 20, 26, 0.17);
+    }
+
+    .drop-zone strong,
+    .drop-zone span,
+    .drop-zone small { display: block; }
+
+    .drop-zone strong { margin-bottom: 5px; font-size: 14px; }
+    .drop-zone span { color: var(--muted); font-size: 12px; }
+    .drop-zone small { margin-top: 11px; color: var(--muted-light); font-size: 10px; }
+
+    #fileInput {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .file-meta {
+      min-height: 22px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .mode-block { min-width: 0; }
+
+    .mode-block > span {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .mode-switch {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .mode-option { position: relative; }
+
+    .mode-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .mode-option span {
+      display: block;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 750;
+      transition: 150ms ease;
+    }
+
+    .mode-option input:checked + span {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(17, 20, 26, 0.16);
+    }
+
+    .mode-option input:focus-visible + span {
+      outline: 3px solid rgba(227, 23, 34, 0.28);
+      outline-offset: 3px;
+    }
+
+    .mode-note {
+      max-width: 500px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .button {
+      min-height: 42px;
+      padding: 10px 15px;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 850;
+      transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    }
+
+    .button:hover:not(:disabled) { transform: translateY(-1px); }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .button-primary {
+      background: var(--red);
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(227, 23, 34, 0.22);
+    }
+
+    .button-primary:hover:not(:disabled) { background: var(--red-dark); }
+
+    .button-secondary {
+      border-color: var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .button-dark { background: var(--ink); color: #fff; }
+
+    .status-panel {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      min-height: 100%;
+      padding: 26px;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .status-panel::after {
+      position: absolute;
+      right: -20px;
+      bottom: -68px;
+      width: 210px;
+      height: 210px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      box-shadow: 0 0 0 32px rgba(255, 255, 255, 0.025), 0 0 0 64px rgba(255, 255, 255, 0.018);
+      content: "";
+    }
+
+    .status-panel > * { position: relative; z-index: 1; }
+
+    .status-panel .section-kicker { color: #ff747c; }
+
+    .status-state {
+      margin-top: 28px;
+      transition: color 180ms ease;
+    }
+
+    .status-orb {
+      display: grid;
+      width: 78px;
+      height: 78px;
+      margin-bottom: 22px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      color: #8993a2;
+      font-size: 26px;
+      font-weight: 300;
+      transition: 180ms ease;
+    }
+
+    .status-panel[data-decision="ALLOW"] .status-orb { background: var(--green); color: #fff; box-shadow: 0 0 0 12px rgba(19, 132, 90, 0.12); }
+    .status-panel[data-decision="REVIEW"] .status-orb { background: var(--amber); color: #fff; box-shadow: 0 0 0 12px rgba(200, 108, 8, 0.12); }
+    .status-panel[data-decision="BLOCK"] .status-orb { background: var(--red); color: #fff; box-shadow: 0 0 0 12px rgba(227, 23, 34, 0.14); }
+
+    .status-state h2 {
+      max-width: 390px;
+      margin-bottom: 10px;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.03;
+      letter-spacing: -0.045em;
+    }
+
+    .status-state p {
+      max-width: 390px;
+      margin-bottom: 0;
+      color: #bbc2cc;
+      font-size: 13px;
+    }
+
+    .status-foot {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 38px;
+      padding-top: 17px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      color: #9fa8b6;
+      font-size: 10px;
+    }
+
+    .status-foot b { color: #fff; }
+
+    .message {
+      min-height: 22px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .message.is-error { color: var(--red-dark); font-weight: 750; }
+    .message.is-success { color: var(--green); font-weight: 750; }
+
+    .results {
+      display: grid;
+      gap: 18px;
+      margin-top: 18px;
+      animation: reveal 380ms ease both;
+    }
+
+    .results[hidden] { display: none; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      min-height: 122px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--paper);
+      box-shadow: 0 10px 34px rgba(17, 20, 26, 0.055);
+    }
+
+    .metric-card span,
+    .metric-card strong,
+    .metric-card small { display: block; }
+
+    .metric-card span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .metric-card strong {
+      margin: 12px 0 7px;
+      font-size: clamp(23px, 3vw, 36px);
+      line-height: 1;
+      letter-spacing: -0.045em;
+    }
+
+    .metric-card small { color: var(--muted); font-size: 10px; }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+      gap: 18px;
+    }
+
+    .findings-panel,
+    .output-panel,
+    .log-panel { padding: 24px; }
+
+    .compact-header { margin-bottom: 15px; }
+
+    .compact-header h2 { margin-bottom: 4px; font-size: 20px; letter-spacing: -0.025em; }
+    .compact-header p { margin-bottom: 0; color: var(--muted); font-size: 12px; }
+
+    .findings-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .finding {
+      display: grid;
+      grid-template-columns: 9px minmax(0, 1fr) auto;
+      gap: 11px;
+      align-items: start;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfcfd;
+    }
+
+    .severity-dot {
+      width: 9px;
+      height: 9px;
+      margin-top: 5px;
+      border-radius: 50%;
+      background: var(--amber);
+    }
+
+    .finding[data-severity="critical"] .severity-dot { background: var(--red); box-shadow: 0 0 0 4px rgba(227, 23, 34, 0.1); }
+    .finding[data-severity="high"] .severity-dot { background: var(--amber); }
+    .finding[data-severity="medium"] .severity-dot { background: #667085; }
+
+    .finding strong,
+    .finding span { display: block; }
+    .finding strong { font-size: 12px; }
+    .finding span { margin-top: 3px; color: var(--muted); font-size: 10px; }
+
+    .finding-count {
+      min-width: 28px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: var(--wash-deep);
+      color: var(--ink-soft);
+      font-size: 10px;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .empty-findings {
+      padding: 22px;
+      border: 1px dashed #b9d9ca;
+      border-radius: 12px;
+      background: var(--green-wash);
+      color: #0c6845;
+      font-size: 12px;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    #sanitizedText {
+      min-height: 350px;
+      padding: 17px;
+      background: #101318;
+      color: #e8ebf0;
+      border-color: #101318;
+    }
+
+    .human-gate {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 11px;
+      margin-top: 14px;
+      padding: 13px;
+      border-radius: 12px;
+      background: var(--amber-wash);
+      color: #75430c;
+      font-size: 11px;
+    }
+
+    .human-gate b:first-child {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--amber);
+      color: #fff;
+      font-size: 11px;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    th,
+    td {
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 850;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    td code {
+      padding: 3px 6px;
+      border-radius: 6px;
+      background: var(--wash);
+      color: var(--red-dark);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+    }
+
+    .legal-note {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .legal-note b:first-child {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 9px;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .legal-note strong { color: var(--ink); }
+
+    .legal-assessment {
+      position: relative;
+      overflow: hidden;
+      margin-top: 26px;
+      border: 1px solid #cfd5df;
+      border-radius: var(--radius-lg);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .legal-assessment::before {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: var(--red);
+      content: "";
+    }
+
+    .legal-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--line);
+      background: #f8f9fb;
+    }
+
+    .legal-toolbar span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .legal-document { padding: 38px 42px 42px; }
+
+    .legal-doc-head {
+      padding-bottom: 26px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .legal-doc-meta {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    .legal-doc-mark {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .legal-doc-mark b {
+      display: grid;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--ink);
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: -0.04em;
+    }
+
+    .legal-doc-mark span,
+    .legal-doc-requisites span { display: block; }
+
+    .legal-doc-mark strong {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .legal-doc-mark span,
+    .legal-doc-requisites {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .legal-doc-requisites {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .legal-doc-head h2 {
+      max-width: 970px;
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+    }
+
+    .legal-doc-subtitle {
+      max-width: 920px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .legal-verdict {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.32fr) minmax(0, 1fr);
+      gap: 22px;
+      margin-top: 24px;
+      padding: 20px;
+      border: 1px solid #a9ddc8;
+      border-radius: 14px;
+      background: var(--green-wash);
+    }
+
+    .legal-verdict-label {
+      color: #0c6845;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .legal-verdict strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #0b573c;
+      font-size: 17px;
+    }
+
+    .legal-verdict p {
+      margin: 0;
+      color: #315c4d;
+      font-size: 12px;
+    }
+
+    .legal-section { padding-top: 30px; }
+
+    .legal-section + .legal-section {
+      margin-top: 30px;
+      border-top: 1px solid var(--line);
+    }
+
+    .legal-section-number {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .legal-section h3 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+
+    .legal-section p,
+    .legal-section li {
+      color: var(--ink-soft);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .legal-section p:last-child { margin-bottom: 0; }
+
+    .legal-summary-grid,
+    .legal-columns,
+    .legal-signatures {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .legal-summary-card,
+    .legal-callout,
+    .legal-source,
+    .legal-step,
+    .legal-signature {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #fbfcfd;
+    }
+
+    .legal-summary-card { padding: 18px; }
+
+    .legal-summary-card[data-tone="positive"] { border-top: 4px solid var(--green); }
+    .legal-summary-card[data-tone="limit"] { border-top: 4px solid var(--amber); }
+
+    .legal-summary-card strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+    }
+
+    .legal-summary-card p { margin: 0; }
+
+    .legal-matrix {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+
+    .legal-matrix table { min-width: 940px; }
+
+    .legal-matrix th { background: #f4f6f8; }
+
+    .legal-matrix td { line-height: 1.55; }
+
+    .legal-matrix a,
+    .legal-sources a {
+      color: var(--red-dark);
+      font-weight: 800;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+
+    .legal-risk {
+      display: inline-flex;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: var(--amber-wash);
+      color: #75430c;
+      font-size: 9px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .legal-algorithm {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      counter-reset: legal-step;
+    }
+
+    .legal-step {
+      position: relative;
+      min-height: 150px;
+      padding: 45px 14px 14px;
+      counter-increment: legal-step;
+    }
+
+    .legal-step::before {
+      position: absolute;
+      top: 13px;
+      left: 13px;
+      display: grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      border-radius: 7px;
+      background: var(--ink);
+      color: #fff;
+      content: counter(legal-step);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .legal-step strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+
+    .legal-step p { margin: 0; font-size: 10px; }
+
+    .legal-callout {
+      margin-top: 14px;
+      padding: 17px 18px;
+      border-left: 4px solid var(--red);
+      background: var(--red-wash);
+    }
+
+    .legal-callout strong { display: block; margin-bottom: 5px; }
+
+    .legal-callout p { margin: 0; }
+
+    .legal-checklist {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: legal-condition;
+    }
+
+    .legal-checklist li {
+      position: relative;
+      min-height: 42px;
+      padding: 10px 12px 10px 48px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fbfcfd;
+      counter-increment: legal-condition;
+    }
+
+    .legal-checklist li::before {
+      position: absolute;
+      top: 10px;
+      left: 11px;
+      display: grid;
+      width: 25px;
+      height: 25px;
+      place-items: center;
+      border-radius: 7px;
+      background: var(--red);
+      color: #fff;
+      content: counter(legal-condition);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .legal-sources {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .legal-source { padding: 14px; }
+
+    .legal-source strong,
+    .legal-source span { display: block; }
+
+    .legal-source strong { margin-bottom: 5px; font-size: 11px; }
+    .legal-source span { color: var(--muted); font-size: 10px; line-height: 1.5; }
+
+    .legal-evidence {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .legal-evidence article {
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .legal-evidence strong,
+    .legal-evidence span { display: block; }
+
+    .legal-evidence strong { margin-bottom: 5px; font-size: 20px; }
+    .legal-evidence span { color: #c6ccd5; font-size: 10px; }
+
+    .legal-signatures { margin-top: 24px; }
+
+    .legal-signature {
+      min-height: 118px;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .legal-signature strong,
+    .legal-signature span { display: block; }
+
+    .legal-signature strong { font-size: 11px; }
+
+    .legal-signature span {
+      margin-top: 36px;
+      padding-top: 7px;
+      border-top: 1px solid var(--ink);
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .legal-final-note {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-radius: 12px;
+      background: var(--ink);
+      color: #d8dde6;
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    .legal-final-note strong { color: #fff; }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 10;
+      max-width: min(380px, calc(100% - 40px));
+      padding: 12px 15px;
+      border-radius: 11px;
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 18px 50px rgba(17, 20, 26, 0.25);
+      font-size: 12px;
+      font-weight: 750;
+      animation: toastIn 220ms ease both;
+    }
+
+    .toast[hidden] { display: none; }
+
+    @keyframes localPulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(19, 132, 90, 0.10); }
+      50% { box-shadow: 0 0 0 8px rgba(19, 132, 90, 0.03); }
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 1040px) {
+      .workspace,
+      .result-grid { grid-template-columns: 1fr; }
+      .status-panel { min-height: 430px; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .legal-algorithm { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 24px, 1440px); padding-top: 16px; }
+      .topbar { align-items: flex-start; flex-direction: column; gap: 12px; }
+      .hero { padding: 28px 22px 22px; border-radius: 19px; }
+      .flowline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .input-grid { grid-template-columns: 1fr; }
+      .drop-zone { min-height: 170px; }
+      .controls-row { align-items: stretch; flex-direction: column; }
+      .action-row { justify-content: stretch; }
+      .action-row .button { flex: 1; }
+      .input-panel,
+      .status-panel,
+      .findings-panel,
+      .output-panel,
+      .log-panel { padding: 19px; }
+      .legal-document { padding: 27px 22px 30px; }
+      .legal-doc-meta,
+      .legal-verdict { grid-template-columns: 1fr; }
+      .legal-doc-meta { display: grid; }
+      .legal-doc-requisites { text-align: left; }
+      .legal-summary-grid,
+      .legal-columns,
+      .legal-sources,
+      .legal-signatures { grid-template-columns: 1fr; }
+      .legal-evidence { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 500px) {
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .metric-card { min-height: 104px; padding: 14px; }
+      .flowline { grid-template-columns: 1fr; }
+      .panel-header { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .offline-badge { white-space: normal; }
+      .button { width: 100%; }
+      .output-actions .button { width: auto; flex: 1; }
+      .legal-toolbar { align-items: stretch; flex-direction: column; }
+      .legal-algorithm,
+      .legal-evidence { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      @page { margin: 14mm; size: A4 portrait; }
+      body { background: #fff; color: #000; }
+      main > :not(#legalAssessment),
+      body > .toast,
+      .no-print { display: none !important; }
+      .shell { width: 100%; margin: 0; padding: 0; }
+      .legal-assessment {
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .legal-assessment::before { display: none; }
+      .legal-document { padding: 0; }
+      .legal-doc-head h2 { font-size: 28px; }
+      .legal-section { break-inside: avoid; }
+      .legal-matrix { overflow: visible; }
+      .legal-matrix table { min-width: 0; font-size: 8px; }
+      .legal-matrix th,
+      .legal-matrix td { padding: 6px; }
+      .legal-algorithm { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .legal-step { min-height: 0; break-inside: avoid; }
+      .legal-source,
+      .legal-signature,
+      .legal-summary-card { break-inside: avoid; }
+      .legal-sources a { color: #000; text-decoration: none; }
+      .legal-sources a::after { content: " — " attr(href); font-weight: 400; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    .integrity-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 16px 0 0;
+    }
+
+    .integrity-item {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface-soft);
+    }
+
+    .integrity-item span,
+    .integrity-item small { display: block; color: var(--muted); }
+    .integrity-item strong { display: block; margin: 4px 0; font-size: 1.08rem; }
+    .integrity-item[data-state="ok"] strong { color: var(--success); }
+    .integrity-item[data-state="review"] strong { color: var(--warning); }
+    .integrity-item[data-state="block"] strong { color: var(--danger); }
+
+    .secure-workflow {
+      margin-top: 24px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .secure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .secure-card {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--surface);
+    }
+
+    .secure-card h3 { margin: 4px 0 8px; font-size: 1.12rem; }
+    .secure-card p { margin: 0 0 14px; color: var(--muted); }
+
+    .field-stack { display: grid; gap: 8px; margin-top: 12px; }
+    .field-stack label { font-weight: 700; }
+    .field-stack input,
+    .field-stack textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+    }
+
+    .field-stack textarea { min-height: 170px; resize: vertical; }
+    .field-stack input:focus,
+    .field-stack textarea:focus { outline: 3px solid rgba(38, 98, 217, .18); border-color: var(--accent); }
+
+    .inline-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .secure-message { min-height: 1.35em; margin: 10px 0 0; color: var(--muted); }
+    .secure-message.is-success { color: var(--success); }
+    .secure-message.is-error { color: var(--danger); }
+    .secure-message.is-warning { color: var(--warning); }
+
+    .restore-output { margin-top: 16px; }
+    .restore-output textarea { min-height: 220px; }
+    .token-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .token-pill { padding: 6px 10px; border-radius: 999px; background: var(--surface-soft); color: var(--muted); font-size: .88rem; }
+
+    @media (max-width: 820px) {
+      .integrity-strip,
+      .secure-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">NF</div>
+        <div class="brand-copy">
+          <strong>Local DLP</strong>
+          <span>NoBoring Finance · контроль перед ИИ</span>
+        </div>
+      </div>
+      <div class="offline-badge">Данные не покидают эту вкладку</div>
+    </header>
+
+    <section class="hero" aria-labelledby="pageTitle">
+      <div class="eyebrow">Локальный шлюз данных</div>
+      <h1 id="pageTitle">Проверить текст до передачи в&nbsp;ИИ</h1>
+      <p class="hero-lead">Инструмент локально находит чувствительные данные, заменяет их устойчивыми токенами, сохраняет зашифрованный словарь и&nbsp;возвращает исходные значения после ответа ИИ.</p>
+      <div class="flowline" aria-label="Этапы обработки">
+        <div class="flow-step"><b>1</b><span>Файл или текст</span></div>
+        <div class="flow-step"><b>2</b><span>Локальная проверка</span></div>
+        <div class="flow-step"><b>3</b><span>Обезличивание</span></div>
+        <div class="flow-step"><b>4</b><span>ИИ и восстановление</span></div>
+      </div>
+    </section>
+
+    <section class="workspace" aria-label="Рабочая область">
+      <article class="panel input-panel">
+        <div class="panel-header">
+          <div>
+            <span class="section-kicker">Шаг 1</span>
+            <h2>Добавьте исходный текст</h2>
+          </div>
+          <button class="text-button" id="loadSample" type="button">Загрузить пример</button>
+        </div>
+
+        <div class="input-grid">
+          <div class="textarea-wrap">
+            <label class="section-kicker" for="sourceText">Текст для проверки</label>
+            <textarea id="sourceText" maxlength="5242880" spellcheck="false" placeholder="Вставьте транскрипт встречи, управленческий отчёт или заметку…"></textarea>
+            <span class="char-counter" id="charCounter">0 / 5 242 880</span>
+          </div>
+
+          <label class="drop-zone" id="dropZone" for="fileInput" tabindex="0" role="button" aria-describedby="fileMeta">
+            <span>
+              <span class="drop-zone-icon" aria-hidden="true">↑</span>
+              <strong>Выбрать файл</strong>
+              <span>или перетащить сюда</span>
+              <small>Только TXT и&nbsp;MD · до 5&nbsp;МБ</small>
+            </span>
+          </label>
+          <input id="fileInput" type="file" accept=".txt,.md,text/plain,text/markdown">
+        </div>
+        <p class="file-meta" id="fileMeta">Файл не выбран. Обработка начнётся только после нажатия кнопки.</p>
+
+        <div class="controls-row">
+          <div class="mode-block">
+            <span>Политика очистки</span>
+            <div class="mode-switch" role="radiogroup" aria-label="Политика очистки">
+              <label class="mode-option">
+                <input type="radio" name="mode" value="reporting" checked>
+                <span>Отчётность · сохранить цифры</span>
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="mode" value="balanced">
+                <span>Баланс · сохранять смысл</span>
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="mode" value="strict">
+                <span>Строго · скрывать больше</span>
+              </label>
+            </div>
+            <p class="mode-note" id="modeNote">Имена, компании и&nbsp;контакты заменяются токенами. Суммы, проценты и&nbsp;финансовые KPI остаются посимвольно без изменений.</p>
+          </div>
+          <div class="action-row">
+            <button class="button button-secondary" id="clearAll" type="button">Очистить</button>
+            <button class="button button-primary" id="runCheck" type="button">Проверить через DLP</button>
+          </div>
+        </div>
+        <p class="message" id="inputMessage" role="status" aria-live="polite"></p>
+      </article>
+
+      <aside class="panel status-panel" id="statusPanel" data-decision="EMPTY" aria-live="polite">
+        <div>
+          <span class="section-kicker">Шаг 2 · решение</span>
+          <div class="status-state">
+            <div class="status-orb" id="statusOrb" aria-hidden="true">?</div>
+            <h2 id="decisionTitle">Результат появится здесь</h2>
+            <p id="decisionText">Добавьте текст и&nbsp;запустите проверку. Инструмент не отправляет исходник на сервер.</p>
+          </div>
+        </div>
+        <div class="status-foot">
+          <span aria-hidden="true">●</span>
+          <span><b>Важно:</b> автоматическая очистка снижает риск, но не заменяет правовую проверку и&nbsp;решение уполномоченного сотрудника.</span>
+        </div>
+      </aside>
+    </section>
+
+    <section class="results" id="results" hidden aria-label="Результаты проверки">
+      <div class="metrics">
+        <article class="metric-card">
+          <span>Риск исходника</span>
+          <strong id="metricRisk">—</strong>
+          <small>До обезличивания</small>
+        </article>
+        <article class="metric-card">
+          <span>Совпадения</span>
+          <strong id="metricFindings">0</strong>
+          <small>Фрагментов найдено</small>
+        </article>
+        <article class="metric-card">
+          <span>Категории</span>
+          <strong id="metricCategories">0</strong>
+          <small>Типов чувствительных данных</small>
+        </article>
+        <article class="metric-card">
+          <span>Объём</span>
+          <strong id="metricWords">0</strong>
+          <small>Слов проверено</small>
+        </article>
+      </div>
+
+      <div class="result-grid">
+        <article class="panel findings-panel">
+          <div class="compact-header">
+            <span class="section-kicker">Что найдено</span>
+            <h2>Карта рисков</h2>
+            <p>Сначала проверяйте красные и&nbsp;оранжевые категории.</p>
+          </div>
+          <div class="findings-list" id="findingsList"></div>
+        </article>
+
+        <article class="panel output-panel">
+          <div class="compact-header">
+            <span class="section-kicker">Очищенная версия</span>
+            <h2>Текст для дальнейшей работы</h2>
+            <p>Исходные значения не входят в&nbsp;этот результат.</p>
+          </div>
+          <div class="output-actions">
+            <button class="button button-dark" id="copyResult" type="button" disabled>Копировать результат</button>
+            <button class="button button-secondary" id="downloadTxt" type="button" disabled>Скачать TXT</button>
+            <button class="button button-secondary" id="downloadJson" type="button" disabled>Скачать отчёт JSON</button>
+          </div>
+          <textarea id="sanitizedText" readonly spellcheck="false" aria-label="Очищенный текст"></textarea>
+          <div class="integrity-strip" aria-label="Контроль целостности">
+            <div class="integrity-item" id="sensitiveIntegrity" data-state="review">
+              <span>Чувствительные данные</span>
+              <strong id="sensitiveIntegrityValue">Ожидает проверки</strong>
+              <small id="sensitiveIntegrityNote">Проверим остаточные значения</small>
+            </div>
+            <div class="integrity-item" id="financialIntegrity" data-state="review">
+              <span>Финансовые цифры</span>
+              <strong id="financialIntegrityValue">—</strong>
+              <small id="financialIntegrityNote">Контроль посимвольной неизменности</small>
+            </div>
+            <div class="integrity-item" id="tokenIntegrity" data-state="review">
+              <span>Токены</span>
+              <strong id="tokenIntegrityValue">—</strong>
+              <small id="tokenIntegrityNote">Связь с локальным vault</small>
+            </div>
+          </div>
+          <div class="human-gate">
+            <b aria-hidden="true">!</b>
+            <span><b>Финальный Gate:</b> перед передачей во внешний ИИ сотрудник сверяет смысл, остаточные идентификаторы и&nbsp;договорные ограничения клиента.</span>
+          </div>
+        </article>
+      </div>
+
+      <article class="panel log-panel">
+        <div class="compact-header">
+          <span class="section-kicker">Журнал без исходных значений</span>
+          <h2>Какие замены сделаны</h2>
+          <p>Таблица содержит только категории и&nbsp;токены. Обратимое соответствие хранится отдельно в&nbsp;зашифрованном локальном vault.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Категория</th>
+                <th>Псевдоним</th>
+                <th>Уровень</th>
+                <th>Количество</th>
+              </tr>
+            </thead>
+            <tbody id="replacementRows"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <div class="secure-workflow" aria-label="Защищённый обмен с ИИ">
+        <div class="secure-grid">
+          <article class="secure-card">
+            <span class="section-kicker">Шаг 3 · локальный vault</span>
+            <h3>Сохранить словарь соответствий</h3>
+            <p>Оригиналы шифруются в браузере и не входят в TXT или безопасный JSON. Для восстановления понадобится этот файл и пароль.</p>
+            <div class="field-stack">
+              <label for="vaultPassword">Пароль vault</label>
+              <input id="vaultPassword" type="password" minlength="12" autocomplete="new-password" placeholder="Не менее 12 символов">
+            </div>
+            <div class="inline-actions">
+              <button class="button button-primary" id="downloadVault" type="button" disabled>Скачать зашифрованный vault</button>
+            </div>
+            <p class="secure-message" id="vaultMessage" role="status"></p>
+          </article>
+
+          <article class="secure-card">
+            <span class="section-kicker">Шаг 4 · ответ ИИ</span>
+            <h3>Импортировать ответ и восстановить значения</h3>
+            <p>Вставьте ответ ИИ с токенами. Можно использовать текущую сессию или загрузить ранее сохранённый `.dpvault`.</p>
+            <div class="field-stack">
+              <label for="aiResponseText">Ответ ИИ</label>
+              <textarea id="aiResponseText" spellcheck="false" placeholder="Вставьте сюда результат анализа с токенами…"></textarea>
+            </div>
+            <div class="field-stack">
+              <label for="vaultFile">Vault другой сессии — необязательно</label>
+              <input id="vaultFile" type="file" accept=".dpvault,application/json">
+            </div>
+            <div class="field-stack">
+              <label for="restorePassword">Пароль загруженного vault</label>
+              <input id="restorePassword" type="password" autocomplete="current-password" placeholder="Нужен только для загруженного файла">
+            </div>
+            <div class="inline-actions">
+              <button class="button button-primary" id="restoreResponse" type="button">Проверить и восстановить</button>
+            </div>
+            <p class="secure-message" id="restoreMessage" role="status"></p>
+          </article>
+        </div>
+
+        <article class="secure-card restore-output" id="restoreOutputCard" hidden>
+          <span class="section-kicker">Локально восстановленный результат</span>
+          <h3>Ответ после проверки токенов</h3>
+          <div class="token-summary" id="tokenSummary"></div>
+          <div class="field-stack">
+            <textarea id="restoredText" readonly spellcheck="false" aria-label="Восстановленный ответ ИИ"></textarea>
+          </div>
+          <div class="inline-actions">
+            <button class="button button-dark" id="copyRestored" type="button">Копировать</button>
+            <button class="button button-secondary" id="downloadRestored" type="button">Скачать восстановленный TXT</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="legal-assessment" id="legalAssessment" aria-labelledby="legalAssessmentTitle">
+      <div class="legal-toolbar no-print">
+        <span>Формальная версия для внутреннего утверждения и&nbsp;юридической проверки</span>
+        <button class="button button-dark" id="printLegalAssessment" type="button">Распечатать заключение</button>
+      </div>
+
+      <article class="legal-document">
+        <header class="legal-doc-head">
+          <div class="legal-doc-meta">
+            <div class="legal-doc-mark">
+              <b aria-hidden="true">NF</b>
+              <div>
+                <strong>NoBoring Finance</strong>
+                <span>Внутренний юридико-технический документ</span>
+              </div>
+            </div>
+            <div class="legal-doc-requisites">
+              <span>№ NF-DLP-01/2026</span>
+              <span>Дата: 10 августа 2026 года</span>
+              <span>Версия заключения: 1.0</span>
+              <span>Объект: NF Local DLP, TXT/MD</span>
+            </div>
+          </div>
+
+          <span class="legal-section-number">Юридико-техническое заключение</span>
+          <h2 id="legalAssessmentTitle">О применимости NF Local DLP при подготовке материалов для ИИ</h2>
+          <p class="legal-doc-subtitle">Самооценка архитектуры, алгоритмов и&nbsp;порядка применения локального фильтра по требованиям законодательства Российской Федерации о&nbsp;персональных данных, коммерческой тайне, защите информации и&nbsp;больших фундаментальных моделях искусственного интеллекта.</p>
+
+          <div class="legal-verdict">
+            <span class="legal-verdict-label">Итоговое мнение</span>
+            <div>
+              <strong>Заключение положительное с обязательными условиями</strong>
+              <p>NF Local DLP можно использовать как предварительную локальную техническую меру для снижения риска раскрытия данных перед работой с&nbsp;ИИ. Соответствие относится к&nbsp;описанной архитектуре и&nbsp;процессу. Оно действует только при выполнении организационных, договорных и&nbsp;контрольных условий раздела&nbsp;5.</p>
+            </div>
+          </div>
+        </header>
+
+        <section class="legal-section">
+          <span class="legal-section-number">1 · правовой статус</span>
+          <h3>Что подтверждает это заключение</h3>
+          <div class="legal-summary-grid">
+            <article class="legal-summary-card" data-tone="positive">
+              <strong>Подтверждается проектное соответствие</strong>
+              <p>Локальная обработка, минимизация передаваемых сведений, блокирование критических категорий, отсутствие сетевых запросов и&nbsp;обязательная проверка человеком согласуются с&nbsp;направлением требований 152-ФЗ, 98-ФЗ и&nbsp;149-ФЗ. Инструмент может быть включён в&nbsp;комплекс мер оператора.</p>
+            </article>
+            <article class="legal-summary-card" data-tone="limit">
+              <strong>Не подтверждается государственная сертификация</strong>
+              <p>Документ не является заключением государственного органа, аттестованной лаборатории или адвоката и&nbsp;не подтверждает соблюдение закона организацией в&nbsp;целом. У&nbsp;NF Local DLP нет сертификата ФСТЭК или ФСБ; он не заменяет обязательные средства защиты, если их применение следует из модели угроз и&nbsp;уровня защищённости ИСПДн.</p>
+            </article>
+          </div>
+          <div class="legal-callout">
+            <strong>Юридически значимая граница</strong>
+            <p>Псевдонимизация не равна гарантированному обезличиванию. Если человека можно определить по контексту, должности, проекту, совокупности показателей или дополнительной информации, очищенный текст продолжает считаться персональными данными. Его передача внешнему ИИ требует самостоятельного правового основания и&nbsp;проверки условий провайдера.</p>
+          </div>
+        </section>
+
+        <section class="legal-section">
+          <span class="legal-section-number">2 · матрица соответствия</span>
+          <h3>Норма → механизм → остаточный риск</h3>
+          <div class="legal-matrix">
+            <table>
+              <thead>
+                <tr>
+                  <th>Норма и требование</th>
+                  <th>Механизм NF DLP</th>
+                  <th>Вывод</th>
+                  <th>Остаточный риск и действие NF</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="https://www.consultant.ru/document/cons_doc_LAW_61801/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">152-ФЗ, статьи 5–7</a>: законность, цель, минимизация и&nbsp;конфиденциальность обработки.</td>
+                  <td>Удаляет прямые идентификаторы и&nbsp;точные финансовые значения; не отправляет исходник автоматически.</td>
+                  <td>Поддерживает минимизацию и&nbsp;снижает риск избыточной передачи.</td>
+                  <td><span class="legal-risk">Организационный</span><br>DLP не создаёт цель или основание обработки. Их фиксирует оператор до загрузки исходника.</td>
+                </tr>
+                <tr>
+                  <td><a href="https://www.consultant.ru/document/cons_doc_LAW_61801/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">152-ФЗ, статьи 10 и 11</a>: специальные категории и&nbsp;биометрические данные.</td>
+                  <td>Индивидуальные сведения о&nbsp;здоровье, WHOOP, голосовой и&nbsp;иной биометрии получают уровень BLOCK. Слова «диагноз» и&nbsp;«состояние» без медицинского или человеческого контекста не блокируют бизнес‑текст.</td>
+                  <td>Реализовано консервативное прекращение передачи.</td>
+                  <td><span class="legal-risk">Высокий</span><br>Эвристики могут дать пропуск. Такие материалы нельзя передавать внешнему ИИ даже после автоматической очистки без отдельного разрешённого контура.</td>
+                </tr>
+                <tr>
+                  <td><a href="https://www.consultant.ru/document/cons_doc_LAW_540340/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">152-ФЗ, статья 12; 265-ФЗ от 26.07.2026</a>: условия трансграничной передачи и&nbsp;оценка защиты в&nbsp;иностранном государстве.</td>
+                  <td>Исходник обрабатывается в&nbsp;памяти локальной вкладки; передача провайдеру не встроена.</td>
+                  <td>Сам инструмент не выполняет трансграничную передачу.</td>
+                  <td><span class="legal-risk">Высокий</span><br>Копирование результата в&nbsp;иностранный ИИ может быть передачей. NF проверяет статус данных, страну, уведомление Роскомнадзора и&nbsp;договор.</td>
+                </tr>
+                <tr>
+                  <td><a href="https://www.consultant.ru/document/cons_doc_LAW_61801/eeeebe22bf738fd65bb66b95cc278911ae2525ee/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">152-ФЗ, статья 18.1</a> и <a href="https://www.consultant.ru/document/cons_doc_LAW_61801/ca9e5658710519f09ab2fdb8196fcb3eb024a051/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">статья 19</a>: достаточные меры, контроль, оценка угроз, доступ и&nbsp;учёт действий.</td>
+                  <td>Локальный режим, закрытая CSP, ограничение формата/объёма, контрольные суммы реквизитов, fail-closed для секретов и&nbsp;ручной Gate.</td>
+                  <td>Техническая мера реализована частично и&nbsp;проверяема тестами.</td>
+                  <td><span class="legal-risk">Системный</span><br>Нужны локальные акты, ответственный, модель угроз, разграничение доступа, журналирование и&nbsp;контроль рабочих устройств.</td>
+                </tr>
+                <tr>
+                  <td><a href="https://www.consultant.ru/document/cons_doc_LAW_137356/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Постановление Правительства РФ № 1119</a> и <a href="https://www.consultant.ru/cons/cgi/online.cgi?base=LAW&amp;n=146520&amp;req=doc" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Приказ ФСТЭК России № 21</a>: уровни защищённости и&nbsp;набор организационно-технических мер для ИСПДн.</td>
+                  <td>DLP уменьшает состав данных до внешней операции и&nbsp;не хранит исходник после закрытия вкладки.</td>
+                  <td>Может быть одной из компенсирующих или дополнительных мер.</td>
+                  <td><span class="legal-risk">Не покрыт полностью</span><br>Уровень защищённости и&nbsp;обязательные меры определяют для всей ИСПДн, а&nbsp;не для одного HTML-файла.</td>
+                </tr>
+                <tr>
+                  <td><a href="https://www.consultant.ru/document/cons_doc_LAW_48699/0ca1b144b64eaa68cd80ca51ad37ac4047c47775/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">98-ФЗ, статья 10</a>: перечень тайны, ограничение доступа, учёт лиц, договоры и&nbsp;маркировка.</td>
+                  <td>Распознаёт финансовые показатели, банковские реквизиты и&nbsp;грифы конфиденциальности; критические грифы останавливают передачу.</td>
+                  <td>Снижает вероятность случайного разглашения.</td>
+                  <td><span class="legal-risk">Организационный</span><br>DLP не устанавливает режим коммерческой тайны. Нужны перечень сведений, гриф с&nbsp;обладателем, NDA, допуски и&nbsp;учёт передачи.</td>
+                </tr>
+                <tr>
+                  <td><a href="https://www.consultant.ru/document/cons_doc_LAW_61798/0e9ec16b786dcbdaaa7f44abfc4a15e601d5be22/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">149-ФЗ, статья 16</a>: правовые, организационные и&nbsp;технические меры защиты информации.</td>
+                  <td>Запрещены сетевые соединения, внешние скрипты, хранилища браузера и&nbsp;HTML-инъекции; результат создаётся локально.</td>
+                  <td>Архитектура уменьшает поверхность утечки через сам инструмент.</td>
+                  <td><span class="legal-risk">Конечное устройство</span><br>Не покрыты вредоносное ПО, расширения браузера, буфер обмена, снимки экрана и&nbsp;несанкционированный доступ к&nbsp;компьютеру.</td>
+                </tr>
+                <tr>
+                  <td><a href="https://rg.ru/documents/2026/07/31/fz243-dok.html" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">243-ФЗ от 26.07.2026 об ИИ</a>: риск-ориентированный подход, безопасность и&nbsp;правила для больших фундаментальных моделей.</td>
+                  <td>Решения ALLOW/REVIEW/BLOCK зависят от категории и&nbsp;тяжести возможного вреда; окончательное решение оставлено человеку.</td>
+                  <td>Подход согласуется с&nbsp;принципами закона. Сам DLP не является большой фундаментальной моделью.</td>
+                  <td><span class="legal-risk">Новая регуляторика</span><br>Закон вступает в&nbsp;силу поэтапно 1&nbsp;сентября 2026 года и&nbsp;1&nbsp;марта 2027 года. NF проверяет будущие акты Правительства и&nbsp;допустимость выбранной модели.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="legal-section">
+          <span class="legal-section-number">3 · проверяемый алгоритм</span>
+          <h3>Алгоритм обработки</h3>
+          <div class="legal-algorithm">
+            <article class="legal-step">
+              <strong>Приём данных</strong>
+              <p>Только TXT или MD в&nbsp;UTF‑8, до 5&nbsp;МБ. Файл не обрабатывается до действия пользователя.</p>
+            </article>
+            <article class="legal-step">
+              <strong>Локальная изоляция</strong>
+              <p>Текст читается в&nbsp;память вкладки. CSP запрещает сетевые запросы, внешние ресурсы и&nbsp;встраивание страницы.</p>
+            </article>
+            <article class="legal-step">
+              <strong>Детерминированный поиск</strong>
+              <p>Построчный разбор транскрипта, локальный словарь русских имён, правила фамилий, метки контекста и&nbsp;контрольные суммы ищут идентификаторы и&nbsp;секреты. Строгий режим одинаково обрабатывает проценты со знаком, цифрами и&nbsp;словами. Всё работает без нейросети.</p>
+            </article>
+            <article class="legal-step">
+              <strong>Классификация</strong>
+              <p>Совпадения распределяются по категориям medium, high и&nbsp;critical с&nbsp;отдельным признаком запрета передачи.</p>
+            </article>
+            <article class="legal-step">
+              <strong>Минимизация</strong>
+              <p>Значения заменяются токенами. В профиле отчётности финансовые суммы и проценты остаются неизменными; в остальных профилях они могут заменяться диапазонами. Исходное имя файла и словарь соответствий в безопасный результат не попадают.</p>
+            </article>
+            <article class="legal-step">
+              <strong>Решение</strong>
+              <p>ALLOW — фильтр не нашёл риск; REVIEW — нужна проверка; BLOCK — внешняя передача запрещена.</p>
+            </article>
+            <article class="legal-step">
+              <strong>Fail-closed</strong>
+              <p>Повторная проверка очищенного текста ищет остаточные ФИО, ключи, токены, закрытые ключи и&nbsp;обфускацию. Найденный остаток переводит результат в&nbsp;BLOCK.</p>
+            </article>
+            <article class="legal-step">
+              <strong>Контроль человеком</strong>
+              <p>Уполномоченный сотрудник проверяет контекст, договорные ограничения и&nbsp;провайдера до копирования результата.</p>
+            </article>
+          </div>
+          <div class="legal-callout">
+            <strong>Правило передачи</strong>
+            <p>Исходник нельзя передавать внешней ИИ-модели. Результат REVIEW передают только после ручного согласования. Результат BLOCK не передают: материал обрабатывают в&nbsp;отдельном разрешённом контуре или исключают из задачи.</p>
+          </div>
+        </section>
+
+        <section class="legal-section">
+          <span class="legal-section-number">4 · доказательная база</span>
+          <h3>Что проверено технически</h3>
+          <div class="legal-evidence">
+            <article><strong>77/77</strong><span>автоматизированных тестов проходят</span></article>
+            <article><strong>30</strong><span>сценариев документов и&nbsp;обходов</span></article>
+            <article><strong>0</strong><span>встроенных сетевых отправок и&nbsp;хранилищ</span></article>
+          </div>
+          <div class="legal-columns" style="margin-top: 14px;">
+            <article class="legal-summary-card">
+              <strong>Проверяемые классы данных</strong>
+              <p>Контакты, имена спикеров, одиночные имена в&nbsp;контексте транскрипции, русские ФИО, явно названные организации, даты рождения, адреса, паспорт, СНИЛС, ИНН/ОГРН/КПП, карты и&nbsp;счета, финансовые показатели, проценты словами и&nbsp;цифрами, индивидуальное здоровье и&nbsp;биометрия, API-ключи, JWT/Bearer, закрытые ключи, IP-адреса, грифы тайны и&nbsp;невидимая Unicode-обфускация.</p>
+            </article>
+            <article class="legal-summary-card">
+              <strong>Предел доказательства</strong>
+              <p>Тесты подтверждают поведение зафиксированной версии на&nbsp;известном наборе примеров. Они не доказывают полноту распознавания естественного языка, отсутствие всех будущих обходов или защищённость компьютера сотрудника.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="legal-section">
+          <span class="legal-section-number">5 · обязательные условия применения</span>
+          <h3>Что NF должно сделать до рабочего использования</h3>
+          <ol class="legal-checklist">
+            <li><strong>Назначить владельца процесса.</strong> Утвердить ответственного за обработку персональных данных и&nbsp;владельца правил DLP; закрепить, кто может давать разрешение после REVIEW и&nbsp;BLOCK.</li>
+            <li><strong>Зафиксировать цель и&nbsp;основание.</strong> Для каждого типа материала определить цель, состав данных, срок хранения и&nbsp;основание по статье&nbsp;6 152-ФЗ. При необходимости получить отдельное согласие и&nbsp;проверить уведомление Роскомнадзора.</li>
+            <li><strong>Установить режим коммерческой тайны.</strong> Принять перечень защищаемых сведений, порядок доступа, грифы, журнал допусков, NDA и&nbsp;условия в&nbsp;договорах с&nbsp;клиентами и&nbsp;работниками.</li>
+            <li><strong>Утвердить реестр ИИ-провайдеров.</strong> Проверить юрисдикцию, место обработки и&nbsp;хранения, использование запросов для обучения, сроки удаления, субподрядчиков, права на&nbsp;результат и&nbsp;условия инцидентов.</li>
+            <li><strong>Оформить внешнюю передачу.</strong> Если очищенный текст всё ещё позволяет определить человека, применять правила поручения обработки и&nbsp;трансграничной передачи, включая актуальную редакцию статьи&nbsp;12 152-ФЗ после 265-ФЗ.</li>
+            <li><strong>Защитить рабочее место.</strong> Ограничить доступ, обновлять браузер и&nbsp;ОС, контролировать расширения, вредоносное ПО, буфер обмена и&nbsp;экран; вести журналы действий в&nbsp;объёме, определённом моделью угроз.</li>
+            <li><strong>Утвердить регламент Gate.</strong> ALLOW не означает автоматического разрешения; REVIEW требует проверки уполномоченным сотрудником; BLOCK запрещает внешнюю передачу. Здоровье, биометрия, платёжные данные и&nbsp;секреты не выводятся из разрешённого контура.</li>
+            <li><strong>Подготовить реакцию на инцидент.</strong> Закрепить обнаружение, остановку передачи, расследование и&nbsp;уведомление Роскомнадзора в&nbsp;сроки статьи&nbsp;21 152-ФЗ; сохранить доказательства без распространения исходных данных.</li>
+            <li><strong>Проводить повторную проверку.</strong> Пересматривать правила и&nbsp;тестовый корпус не реже одного раза в&nbsp;квартал, после изменения кода, видов документов, ИИ-провайдера или законодательства.</li>
+          </ol>
+        </section>
+
+        <section class="legal-section">
+          <span class="legal-section-number">6 · актуальные источники</span>
+          <h3>Нормативная база и&nbsp;дата проверки</h3>
+          <div class="legal-sources">
+            <a class="legal-source" href="https://www.consultant.ru/document/cons_doc_LAW_61801/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><strong>Федеральный закон № 152-ФЗ «О персональных данных»</strong><span>Актуальная редакция от 26.07.2026; статьи 3, 5–7, 10–12, 18, 18.1, 19, 21 и&nbsp;22.</span></a>
+            <a class="legal-source" href="https://www.consultant.ru/document/cons_doc_LAW_540340/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><strong>Федеральный закон № 265-ФЗ от 26.07.2026</strong><span>Последние изменения статьи&nbsp;12 152-ФЗ о&nbsp;трансграничной передаче; статья&nbsp;1 действует со дня опубликования.</span></a>
+            <a class="legal-source" href="https://www.consultant.ru/document/cons_doc_LAW_48699/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><strong>Федеральный закон № 98-ФЗ «О коммерческой тайне»</strong><span>Статьи 3, 10, 11 и&nbsp;14; обязательные элементы режима коммерческой тайны.</span></a>
+            <a class="legal-source" href="https://www.consultant.ru/document/cons_doc_LAW_61798/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><strong>Федеральный закон № 149-ФЗ «Об информации…»</strong><span>Актуальная редакция от 26.06.2026; статья&nbsp;16 о&nbsp;защите информации.</span></a>
+            <a class="legal-source" href="https://www.consultant.ru/document/cons_doc_LAW_137356/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><strong>Постановление Правительства РФ № 1119</strong><span>Требования к&nbsp;защите персональных данных в&nbsp;информационных системах.</span></a>
+            <a class="legal-source" href="https://www.consultant.ru/cons/cgi/online.cgi?base=LAW&amp;n=146520&amp;req=doc" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><strong>Приказ ФСТЭК России № 21 от 18.02.2013</strong><span>Состав организационных и&nbsp;технических мер для уровней защищённости ИСПДн.</span></a>
+            <a class="legal-source" href="https://rg.ru/documents/2026/07/31/fz243-dok.html" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><strong>Федеральный закон № 243-ФЗ от 26.07.2026 об ИИ</strong><span>Официально опубликован 31.07.2026; основные даты вступления — 01.09.2026 и&nbsp;01.03.2027.</span></a>
+            <a class="legal-source" href="https://pd.rkn.gov.ru/operators-registry/notification/form/" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><strong>Портал персональных данных Роскомнадзора</strong><span>Формы уведомлений оператора и&nbsp;сведения о&nbsp;процедурах в&nbsp;области персональных данных.</span></a>
+          </div>
+          <p style="margin-top: 14px;"><strong>Дата актуальности проверки:</strong> 10 августа 2026 года. До 1&nbsp;сентября 2026 года и&nbsp;1&nbsp;марта 2027 года NF должна повторно проверить подзаконные акты к&nbsp;243-ФЗ и&nbsp;утверждённый перечень случаев, где допускаются только суверенные или национальные большие фундаментальные модели.</p>
+        </section>
+
+        <section class="legal-section">
+          <span class="legal-section-number">7 · утверждение</span>
+          <h3>Условия придания документу внутреннего статуса</h3>
+          <p>Заключение становится внутренним документом NF после проверки реквизитов организации, сопоставления с&nbsp;реальными договорами и&nbsp;локальными актами, а&nbsp;также подписания уполномоченными лицами. До подписания это проект юридико-технической самооценки.</p>
+          <div class="legal-signatures">
+            <div class="legal-signature"><strong>Утверждаю: руководитель организации</strong><span>ФИО · подпись · дата</span></div>
+            <div class="legal-signature"><strong>Согласовано: ответственный за обработку ПДн</strong><span>ФИО · подпись · дата</span></div>
+            <div class="legal-signature"><strong>Согласовано: юридическая функция</strong><span>ФИО · подпись · дата</span></div>
+            <div class="legal-signature"><strong>Согласовано: информационная безопасность</strong><span>ФИО · подпись · дата</span></div>
+          </div>
+          <div class="legal-final-note"><strong>Финальный вывод.</strong> Архитектура NF Local DLP соответствует принципу предварительной минимизации и&nbsp;может применяться как один из&nbsp;технических барьеров перед ИИ. Правомерность конкретной передачи определяется не статусом ALLOW/REVIEW, а&nbsp;совокупностью правового основания, режима тайны, договора с&nbsp;провайдером, места обработки, настроек сервиса, остаточной идентифицируемости и&nbsp;решения уполномоченного сотрудника.</div>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script id="dlp-engine">
+  (function (root) {
+    'use strict';
+
+    const MAX_TEXT_CHARS = 5 * 1024 * 1024;
+    const SEVERITY_RANK = Object.freeze({ medium: 1, high: 2, critical: 3 });
+    const RISK_BY_SEVERITY = Object.freeze({ medium: 'MEDIUM', high: 'HIGH', critical: 'CRITICAL' });
+    const TOKEN_NAMES = Object.freeze({
+      email: 'EMAIL',
+      phone: 'ТЕЛЕФОН',
+      person_name: 'ФИО',
+      birth_date: 'ДАТА_РОЖДЕНИЯ',
+      social_handle: 'КОНТАКТ_МЕССЕНДЖЕРА',
+      address: 'АДРЕС',
+      organization: 'ОРГАНИЗАЦИЯ',
+      inn: 'ИНН',
+      ogrn: 'ОГРН',
+      kpp: 'КПП',
+      snils: 'СНИЛС',
+      passport: 'ПАСПОРТ',
+      payment_card: 'БАНКОВСКАЯ_КАРТА',
+      bank_account: 'РАСЧЁТНЫЙ_СЧЁТ',
+      correspondent_account: 'КОРСЧЁТ',
+      bik: 'БИК',
+      credential: 'СЕКРЕТ_ДОСТУПА',
+      private_key: 'ЗАКРЫТЫЙ_КЛЮЧ',
+      credential_url: 'ССЫЛКА_С_ДОСТУПОМ',
+      ip_address: 'IP_АДРЕС',
+      financial_amount: 'ФИНПОКАЗАТЕЛЬ',
+      health_biometric: 'ДАННЫЕ_ЗДОРОВЬЯ',
+      confidentiality: 'МАРКИРОВКА_КОНФИДЕНЦИАЛЬНОСТИ',
+      obfuscation: 'СКРЫТЫЕ_СИМВОЛЫ',
+      date: 'ДАТА',
+      percentage: 'ПРОЦЕНТ',
+    });
+
+    const TOKEN_CODES = Object.freeze({
+      email: 'EMAIL', phone: 'PHONE', person_name: 'PERSON', birth_date: 'BIRTHDATE',
+      social_handle: 'SOCIAL', address: 'ADDRESS', organization: 'ORG', inn: 'INN',
+      ogrn: 'OGRN', kpp: 'KPP', snils: 'SNILS', passport: 'PASSPORT',
+      payment_card: 'CARD', bank_account: 'ACCOUNT', correspondent_account: 'CORRACCOUNT',
+      bik: 'BIK', credential: 'SECRET', private_key: 'PRIVATEKEY', credential_url: 'SECRETURL',
+      ip_address: 'IP', financial_amount: 'FINANCE', health_biometric: 'HEALTH',
+      confidentiality: 'CONFIDENTIAL', obfuscation: 'OBFUSCATION', date: 'DATE', percentage: 'PERCENT',
+    });
+
+    const CATEGORY_META = Object.freeze({
+      email: ['Электронная почта', 'medium', false, 'Прямой контакт может идентифицировать человека.'],
+      phone: ['Телефон', 'medium', false, 'Номер телефона относится к прямым контактным данным.'],
+      person_name: ['ФИО', 'high', false, 'Имя в деловом контексте может идентифицировать человека.'],
+      birth_date: ['Дата рождения', 'high', false, 'Дата рождения в связке с контекстом идентифицирует человека.'],
+      social_handle: ['Контакт в мессенджере', 'medium', false, 'Имя пользователя относится к прямым контактным данным.'],
+      address: ['Адрес', 'high', false, 'Домашний адрес относится к прямым персональным данным.'],
+      organization: ['Организация', 'medium', false, 'Название клиента или контрагента раскрывает деловую связь.'],
+      inn: ['ИНН', 'high', false, 'ИНН идентифицирует организацию, ИП или физическое лицо.'],
+      ogrn: ['ОГРН / ОГРНИП', 'high', false, 'Регистрационный номер идентифицирует организацию или ИП.'],
+      kpp: ['КПП', 'medium', false, 'КПП вместе с другими реквизитами идентифицирует подразделение.'],
+      snils: ['СНИЛС', 'high', true, 'СНИЛС — государственный идентификатор физического лица.'],
+      passport: ['Паспорт', 'high', true, 'Паспортные данные нельзя передавать во внешний ИИ без отдельного основания и контроля.'],
+      payment_card: ['Банковская карта', 'critical', true, 'Платёжные данные требуют блокировки внешней передачи.'],
+      bank_account: ['Расчётный счёт', 'high', false, 'Банковские реквизиты требуют ручной проверки перед передачей.'],
+      correspondent_account: ['Корреспондентский счёт', 'high', false, 'Банковские реквизиты требуют ручной проверки перед передачей.'],
+      bik: ['БИК', 'medium', false, 'Банковский идентификатор раскрывает реквизиты расчётов.'],
+      credential: ['Секрет доступа', 'critical', true, 'Пароль, токен или ключ надо отозвать, если он уже попал в документ.'],
+      private_key: ['Закрытый ключ', 'critical', true, 'Закрытый криптографический ключ нельзя передавать или хранить в отчёте.'],
+      credential_url: ['Ссылка с доступом', 'critical', true, 'Ссылка содержит логин или пароль.'],
+      ip_address: ['IP-адрес', 'medium', false, 'Адрес может раскрывать внутреннюю инфраструктуру.'],
+      financial_amount: ['Точная финансовая сумма', 'high', false, 'Точные результаты клиента заменены широким диапазоном.'],
+      health_biometric: ['Здоровье или биометрия', 'critical', true, 'Специальные категории данных обрабатывают только в отдельном разрешённом контуре.'],
+      confidentiality: ['Маркировка конфиденциальности', 'high', true, 'Документ прямо помечен как конфиденциальный или содержащий коммерческую тайну.'],
+      obfuscation: ['Скрытые Unicode-символы', 'critical', true, 'Невидимые символы могут использоваться для обхода автоматической проверки.'],
+      date: ['Дата', 'medium', false, 'Строгий режим скрывает точные даты.'],
+      percentage: ['Процент', 'medium', false, 'Строгий режим скрывает точные относительные показатели.'],
+    });
+
+    const RUSSIAN_FIRST_NAMES = new Set(`
+      аарон абрам авраам адам адель аделина адриан азамат аида айдар алан александр
+      александра алексей али алибек алина алиса алёна алена амир амина анастасия
+      анатолий андрей анна антон антонина аркадий арсен арсений артемий артём артем
+      артур ася ахмед богдан борис булат вадим валентин валентина валерий валерия
+      ваня варвара варя василий василиса вахтанг вера вероника виктор виктория
+      виталий влад владимир владислав володя вова вячеслав галина галя геннадий гена
+      георгий герман глеб гоша григорий гриша давид даниил данил данила даня дарья
+      даша денис диана дима дмитрий ева евгений евгения егор екатерина елена
+      елизавета жаргал женя зара зарина захар зоя игорь иван игнат игорь илья инна ирина ира
+      ислам камиль карен карина катерина катя кира кирилл коля константин костя
+      кристина ксения ксюша лариса лев лейла лена леонид лера лиза лидия лилия
+      любов любовь люба людмила люда мадина майя макар максим макс марат маргарита
+      марина мария марк мартин матвей маша милана мирон михаил миша мурат мурад
+      муслим надежда надя назар настя наталия наталья наташа никита николай нина
+      оксана олег ольга оля павел паша пётр петр петя платон полина раиса рамазан
+      рамина регина ренат рита роберт родион роман рома ростислав руслан рустам сабина
+      самир саша света светлана святослав семён семен сергей серёжа сережа софия
+      соня софья станислав стас степан таисия тамара таня татьяна тимофей тимур ульяна
+      уля фёдор федор федя филипп эдуард элина эльвира эльдар эмиль юлия юля юрий
+      юра яна ярослав яша
+    `.trim().split(/\s+/u));
+
+    const RUSSIAN_SHORT_NAME_ALIASES = new Map(Object.entries({
+      ваня: 'иван', варя: 'варвара', володя: 'владимир', вова: 'владимир', галя: 'галина',
+      гена: 'геннадий', гоша: 'георгий', гриша: 'григорий', даня: 'даниил', даша: 'дарья',
+      дима: 'дмитрий', женя: 'евгений', ира: 'ирина', катя: 'екатерина', коля: 'николай',
+      костя: 'константин', ксюша: 'ксения', лена: 'елена', лера: 'валерия', лиза: 'елизавета',
+      люба: 'любовь', люда: 'людмила', макс: 'максим', маша: 'мария', миша: 'михаил',
+      надя: 'надежда', настя: 'анастасия', наташа: 'наталья', оля: 'ольга', паша: 'павел',
+      петя: 'пётр', рита: 'маргарита', рома: 'роман', саша: 'александр', света: 'светлана',
+      серёжа: 'сергей', сережа: 'сергей', соня: 'софия', стас: 'станислав', таня: 'татьяна',
+      уля: 'ульяна', федя: 'фёдор', юля: 'юлия', юра: 'юрий', яша: 'ярослав',
+    }));
+
+    const TRANSCRIPT_HEADING_ALLOWLIST = new Set([
+      'бюджет', 'вывод', 'выручка', 'вопрос', 'действие', 'задача', 'итог', 'комментарий',
+      'компания', 'контекст', 'метрика', 'ответ', 'план', 'прибыль', 'проблема', 'прогноз',
+      'рекомендация', 'решение', 'риск', 'статус', 'цель', 'ebitda', 'mrr', 'arr',
+    ]);
+
+    const RUSSIAN_NAME_TOKEN_SOURCE = String.raw`(?:[А-ЯЁ]\.|[А-ЯЁ][а-яё]{1,39}(?:[-’'][А-ЯЁ][а-яё]{1,39})?|[А-ЯЁ]{2,40}(?:-[А-ЯЁ]{2,40})?)`;
+    const RUSSIAN_NAME_SPAN_SOURCE = `${RUSSIAN_NAME_TOKEN_SOURCE}(?:[ \\t]+${RUSSIAN_NAME_TOKEN_SOURCE}){0,3}`;
+    const RUSSIAN_FULL_NAME_SOURCE = `${RUSSIAN_NAME_TOKEN_SOURCE}(?:[ \\t]+${RUSSIAN_NAME_TOKEN_SOURCE}){1,3}`;
+    const RUSSIAN_PERCENT_UNIT_WORD_SOURCE = String.raw`(?:один|одна|одно|одного|одной|два|две|двух|три|трёх|трех|четыре|четырёх|четырех|пять|пяти|шесть|шести|семь|семи|восемь|восьми|девять|девяти)`;
+    const RUSSIAN_PERCENT_TENS_WORD_SOURCE = String.raw`(?:двадцать|двадцати|тридцать|тридцати|сорок|сорока|пятьдесят|пятидесяти|шестьдесят|шестидесяти|семьдесят|семидесяти|восемьдесят|восьмидесяти|девяносто|девяноста)`;
+    const RUSSIAN_PERCENT_SIMPLE_WORD_SOURCE = String.raw`(?:ноль|нуля|нуль|один|одна|одно|одного|одной|два|две|двух|три|трёх|трех|четыре|четырёх|четырех|пять|пяти|шесть|шести|семь|семи|восемь|восьми|девять|девяти|десять|десяти|одиннадцать|одиннадцати|двенадцать|двенадцати|тринадцать|тринадцати|четырнадцать|четырнадцати|пятнадцать|пятнадцати|шестнадцать|шестнадцати|семнадцать|семнадцати|восемнадцать|восемнадцати|девятнадцать|девятнадцати)`;
+    const RUSSIAN_PERCENT_WORD_SOURCE = `(?:сто|ста|${RUSSIAN_PERCENT_TENS_WORD_SOURCE}(?:[ \\t]+${RUSSIAN_PERCENT_UNIT_WORD_SOURCE})?|${RUSSIAN_PERCENT_SIMPLE_WORD_SOURCE})`;
+    const FINANCIAL_MAGNITUDE_SOURCE = String.raw`(?:тыс\.?|тысяч(?:а|и)?|млн|миллион(?:а|ов)?|млрд|миллиард(?:а|ов)?)`;
+    const CURRENCY_SOURCE = String.raw`(?:₽|руб(?:\.|ль|ля|лей)?|RUB|USD|EUR|\$|€)`;
+    const FINANCIAL_NUMBER_SOURCE = String.raw`(?:\d{1,3}(?:[ \u00a0\u202f]\d{3})+|\d+)(?:[.,]\d+)?`;
+    const FINANCIAL_KEYWORD_SOURCE = String.raw`(?:выручк[аиу]?|оборот|прибыл[ьи]?|убыт(?:ок|ка)|EBITDA|ARR|MRR|денежн(?:ый|ого)[ \t]+поток|себестоимост[ьи]?|затрат[ыа]?|расход[ыа]?|долг|остаток|зарплат[аы]?|бюджет|план|факт)`;
+    const TRANSCRIPT_LINE_PREFIX_SOURCE = String.raw`[ \t]*(?:(?:[-*>]|#{1,6}|\d+[.)])[ \t]+)?(?:(?:\[(?:(?:\d{1,2}:){1,2}\d{2}|(?:SPEAKER|Speaker|speaker)[_ -]?\d+)\]|(?:\d{1,2}:){1,2}\d{2}|(?:SPEAKER|Speaker|speaker)[_ -]?\d+)[ \t]+)?(?:\*\*)?`;
+    const RUSSIAN_FIRST_NAME_FORMS = buildRussianFirstNameForms();
+
+    function digitsOnly(value) {
+      return String(value).replace(/\D/gu, '');
+    }
+
+    function isValidLuhn(value) {
+      const digits = digitsOnly(value);
+      if (digits.length < 13 || digits.length > 19 || /^(\d)\1+$/u.test(digits)) return false;
+      let sum = 0;
+      let doubleDigit = false;
+      for (let index = digits.length - 1; index >= 0; index -= 1) {
+        let digit = Number(digits[index]);
+        if (doubleDigit) {
+          digit *= 2;
+          if (digit > 9) digit -= 9;
+        }
+        sum += digit;
+        doubleDigit = !doubleDigit;
+      }
+      return sum % 10 === 0;
+    }
+
+    function isValidInn(value) {
+      const digits = digitsOnly(value).split('').map(Number);
+      if (digits.length === 10) {
+        const weights = [2, 4, 10, 3, 5, 9, 4, 6, 8];
+        const check = (weights.reduce((sum, weight, index) => sum + weight * digits[index], 0) % 11) % 10;
+        return check === digits[9];
+      }
+      if (digits.length === 12) {
+        const firstWeights = [7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
+        const secondWeights = [3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
+        const first = (firstWeights.reduce((sum, weight, index) => sum + weight * digits[index], 0) % 11) % 10;
+        const second = (secondWeights.reduce((sum, weight, index) => sum + weight * digits[index], 0) % 11) % 10;
+        return first === digits[10] && second === digits[11];
+      }
+      return false;
+    }
+
+    function isValidSnils(value) {
+      const digits = digitsOnly(value);
+      if (digits.length !== 11) return false;
+      const source = digits.slice(0, 9).split('').map(Number);
+      let check = source.reduce((sum, digit, index) => sum + digit * (9 - index), 0);
+      if (check < 100) {
+        // Keep as is.
+      } else if (check === 100 || check === 101) {
+        check = 0;
+      } else {
+        check %= 101;
+        if (check === 100) check = 0;
+      }
+      return String(check).padStart(2, '0') === digits.slice(9);
+    }
+
+    function isValidOgrn(value) {
+      const digits = digitsOnly(value);
+      if (digits.length === 13) return Number(digits.slice(0, 12)) % 11 % 10 === Number(digits[12]);
+      if (digits.length === 15) return Number(digits.slice(0, 14)) % 13 % 10 === Number(digits[14]);
+      return false;
+    }
+
+    function isValidIpv4(value) {
+      const parts = String(value).split('.');
+      return parts.length === 4 && parts.every((part) => /^\d{1,3}$/u.test(part) && Number(part) <= 255);
+    }
+
+    function isValidIpv6(value) {
+      const candidate = String(value).trim();
+      if (!candidate.includes(':') || !/^[0-9a-f:]+$/iu.test(candidate)) return false;
+      if ((candidate.match(/::/gu) || []).length > 1) return false;
+      const groups = candidate.split(':').filter(Boolean);
+      if (groups.some((group) => group.length > 4)) return false;
+      return candidate.includes('::') ? groups.length >= 2 && groups.length < 8 : groups.length === 8;
+    }
+
+    function findWithRegex(text, definition) {
+      const flags = definition.regex.flags.includes('g') ? definition.regex.flags : `${definition.regex.flags}g`;
+      const regex = new RegExp(definition.regex.source, flags);
+      const matches = [];
+      let match;
+      while ((match = regex.exec(text)) !== null) {
+        const group = definition.group || 0;
+        const raw = match[group];
+        if (!raw || (definition.validate && !definition.validate(raw, match))) {
+          if (match[0].length === 0) regex.lastIndex += 1;
+          continue;
+        }
+        const relativeIndex = group === 0 ? 0 : match[0].lastIndexOf(raw);
+        const start = match.index + relativeIndex;
+        matches.push({
+          start,
+          end: start + raw.length,
+          raw,
+          category: definition.category,
+          replacementType: definition.replacementType || definition.category,
+        });
+        if (match[0].length === 0) regex.lastIndex += 1;
+      }
+      return matches;
+    }
+
+    function normalizeRussianNameToken(value) {
+      return String(value)
+        .normalize('NFKC')
+        .replace(/[.’']/gu, '')
+        .toLocaleLowerCase('ru-RU')
+        .replace(/ё/gu, 'е');
+    }
+
+    function buildRussianFirstNameForms() {
+      const forms = new Map();
+      const add = (form, canonical) => forms.set(normalizeRussianNameToken(form), canonical);
+      for (const sourceName of RUSSIAN_FIRST_NAMES) {
+        const name = normalizeRussianNameToken(sourceName);
+        const stem = name.slice(0, -1);
+        const canonical = RUSSIAN_SHORT_NAME_ALIASES.get(name) || name;
+        add(name, canonical);
+        if (name.endsWith('а')) {
+          const genitiveEnding = /[гкхжчшщц]$/u.test(stem) ? 'и' : 'ы';
+          for (const ending of [genitiveEnding, 'е', 'у', 'ой', 'ою']) add(`${stem}${ending}`, canonical);
+        } else if (name.endsWith('я')) {
+          for (const ending of ['и', 'е', 'ю', 'ей', 'ею']) add(`${stem}${ending}`, canonical);
+        } else if (name.endsWith('й')) {
+          for (const ending of ['я', 'ю', 'ем', 'е']) add(`${stem}${ending}`, canonical);
+        } else if (name.endsWith('ь')) {
+          for (const ending of ['я', 'ю', 'ем', 'е', 'и', 'ью']) add(`${stem}${ending}`, canonical);
+        } else if (/[бвгджзклмнпрстфхцчшщ]$/u.test(name)) {
+          for (const ending of ['а', 'у', 'ом', 'е']) add(`${name}${ending}`, canonical);
+        }
+      }
+      return forms;
+    }
+
+    function russianFirstNameLemma(token) {
+      return RUSSIAN_FIRST_NAME_FORMS.get(normalizeRussianNameToken(token)) || null;
+    }
+
+    function isLikelyRussianSurname(token) {
+      const normalized = normalizeRussianNameToken(token);
+      return /(?:(?:ов|ев|ин|ын)(?:а|у|ым|ом|е|ы|ой|ою)?|(?:ск|цк)(?:ий|ая|ого|ому|им|ом|ую|ой|ою|ие|их|ими)|енко|ко|ук|юк|ич|вич|швили|дзе|идзе|ян|янц|оглы|заде|ых|их|ец|ун|ак|як)$/u.test(normalized);
+    }
+
+    function isLikelyRussianPatronymic(token) {
+      return /(?:ович|евич|ич|овна|евна|ична)$/u.test(normalizeRussianNameToken(token));
+    }
+
+    function isTranscriptSpeakerCandidate(raw, explicitRole) {
+      const tokens = String(raw).trim().split(/[ \t]+/u).filter(Boolean);
+      if (tokens.length === 0 || tokens.length > 4) return false;
+      const normalized = tokens.map(normalizeRussianNameToken);
+      if (normalized.length === 1 && TRANSCRIPT_HEADING_ALLOWLIST.has(normalized[0])) return false;
+      if (explicitRole) return true;
+      if (tokens.some((token) => russianFirstNameLemma(token))) return true;
+      if (tokens.some((token) => /^[А-ЯЁ]\.$/u.test(token)) && tokens.some(isLikelyRussianSurname)) return true;
+      return tokens.length >= 2 && tokens.some(isLikelyRussianPatronymic) && tokens.some(isLikelyRussianSurname);
+    }
+
+    function isRussianPersonMention(raw) {
+      const tokens = String(raw).trim().split(/[ \t]+/u).filter(Boolean);
+      if (tokens.length < 2 || tokens.length > 4) return false;
+      const firstNameIndex = tokens.findIndex((token) => russianFirstNameLemma(token));
+      const hasFirstName = firstNameIndex >= 0;
+      const hasSurname = tokens.some(isLikelyRussianSurname);
+      const hasPatronymic = tokens.some(isLikelyRussianPatronymic);
+      const hasInitial = tokens.some((token) => /^[А-ЯЁ]\.$/u.test(token));
+      const nameLedSequence = firstNameIndex === 0;
+      const surnameLedSequence = firstNameIndex > 0 && tokens.slice(0, firstNameIndex).some(isLikelyRussianSurname);
+      return (hasFirstName && (nameLedSequence || surnameLedSequence))
+        || (hasInitial && hasSurname)
+        || (hasPatronymic && hasSurname);
+    }
+
+    function personIdentityKey(raw) {
+      return normalizeKey(raw);
+    }
+
+    function transcriptSpeakerDefinitions() {
+      return [
+        {
+          category: 'person_name',
+          regex: new RegExp(`^${TRANSCRIPT_LINE_PREFIX_SOURCE}(${RUSSIAN_NAME_SPAN_SOURCE})(?=[ \\t]*(?::|—|-)[ \\t]*(?:\\*\\*)?)`, 'gmu'),
+          group: 1,
+          validate: (raw) => isTranscriptSpeakerCandidate(raw, false),
+        },
+        {
+          category: 'person_name',
+          regex: new RegExp(`^[ \\t]*(?:(?:[-*>]|#{1,6}|\\d+[.)])[ \\t]+)?(?:(?:\\[(?:\\d{1,2}:){1,2}\\d{2}\\]|(?:\\d{1,2}:){1,2}\\d{2})[ \\t]+)?(?:\\*\\*)?(?:спикер|участник|speaker)[ \\t]*(?:№?[ \\t]*\\d+)?[ \\t]*(?:[:—-])[ \\t]*(?:\\*\\*)?(${RUSSIAN_NAME_SPAN_SOURCE})(?=[ \\t]*(?:(?::|—|-)[ \\t]*(?:\\*\\*)?|\\*\\*[ \\t]*$|$))`, 'gimu'),
+          group: 1,
+          validate: (raw) => isTranscriptSpeakerCandidate(raw, true),
+        },
+      ];
+    }
+
+    function findTranscriptSpeakers(text) {
+      return transcriptSpeakerDefinitions().flatMap((definition) => findWithRegex(text, definition))
+        .map((match) => ({ ...match, identityKey: personIdentityKey(match.raw) }));
+    }
+
+    function findRussianPersonMentions(text) {
+      const definition = {
+        category: 'person_name',
+        regex: new RegExp(`(?<![\\p{L}\\p{N}_])(${RUSSIAN_FULL_NAME_SOURCE})(?![\\p{L}\\p{N}_])`, 'gu'),
+        group: 1,
+        validate: isRussianPersonMention,
+      };
+      return findWithRegex(text, definition)
+        .map((match) => ({ ...match, identityKey: personIdentityKey(match.raw) }));
+    }
+
+    function findStrongSingleNameMentions(text, identityMatches) {
+      const ownersByFirstName = new Map();
+      for (const identity of identityMatches) {
+        const tokens = identity.raw.match(new RegExp(RUSSIAN_NAME_TOKEN_SOURCE, 'gu')) || [];
+        const canonical = tokens.map(russianFirstNameLemma).find(Boolean);
+        if (!canonical) continue;
+        if (!ownersByFirstName.has(canonical)) ownersByFirstName.set(canonical, new Set());
+        ownersByFirstName.get(canonical).add(identity.identityKey);
+      }
+
+      const matches = [];
+      const lineRegex = /^([ \t]*(?:(?:[-*>]|#{1,6}|\d+[.)])[ \t]+)?(?:(?:\[(?:\d{1,2}:){1,2}\d{2}\]|(?:\d{1,2}:){1,2}\d{2})[ \t]+))([^\n]*)$/gmu;
+      let lineMatch;
+      while ((lineMatch = lineRegex.exec(text)) !== null) {
+        const content = lineMatch[2];
+        const contentStart = lineMatch.index + lineMatch[0].lastIndexOf(content);
+        const tokenRegex = new RegExp(RUSSIAN_NAME_TOKEN_SOURCE, 'gu');
+        let tokenMatch;
+        while ((tokenMatch = tokenRegex.exec(content)) !== null) {
+          const raw = tokenMatch[0];
+          const canonical = russianFirstNameLemma(raw);
+          if (!canonical) continue;
+          const before = content.slice(0, tokenMatch.index);
+          const after = content.slice(tokenMatch.index + raw.length);
+          const lexicalWords = content.match(/\p{L}+/gu) || [];
+          const onlyName = lexicalWords.length === 1;
+          const followsInlineContext = before.trim().length > 0 && !/[.!?][ \t]*$/u.test(before);
+          const vocative = /^[ \t]*[,!.?]/u.test(after)
+            && (before.trim().length === 0 || /(?:[,;—-]|\b(?:так|пожалуйста))[ \t]*$/iu.test(before));
+          if (!onlyName && !followsInlineContext && !vocative) continue;
+
+          const owners = ownersByFirstName.get(canonical);
+          const identityKey = owners && owners.size === 1 ? [...owners][0] : `single:${canonical}`;
+          matches.push({
+            start: contentStart + tokenMatch.index,
+            end: contentStart + tokenMatch.index + raw.length,
+            raw,
+            category: 'person_name',
+            replacementType: 'person_name',
+            identityKey,
+          });
+        }
+      }
+      return matches;
+    }
+
+    function findSpeakerAliases(text, speakerMatches) {
+      const aliases = new Map();
+      for (const speaker of speakerMatches) {
+        const identityKey = speaker.identityKey;
+        const tokens = speaker.raw.match(new RegExp(RUSSIAN_NAME_TOKEN_SOURCE, 'gu')) || [];
+        for (const token of tokens) {
+          if (/^[А-ЯЁ]\.$/u.test(token) || token.length < 3) continue;
+          const normalized = russianFirstNameLemma(token) || normalizeRussianNameToken(token);
+          if (!aliases.has(normalized)) aliases.set(normalized, { token, owners: new Set() });
+          aliases.get(normalized).owners.add(identityKey);
+        }
+      }
+
+      const matches = [];
+      const tokenRegex = new RegExp(`(?<![\\p{L}\\p{N}_])${RUSSIAN_NAME_TOKEN_SOURCE}(?![\\p{L}\\p{N}_])`, 'gu');
+      for (const match of findWithRegex(text, { category: 'person_name', regex: tokenRegex })) {
+        const alias = aliases.get(russianFirstNameLemma(match.raw) || normalizeRussianNameToken(match.raw));
+        if (!alias || alias.owners.size !== 1) continue;
+        matches.push({ ...match, identityKey: [...alias.owners][0] });
+      }
+      return matches;
+    }
+
+    function detectorDefinitions(mode) {
+      const definitions = [
+        {
+          category: 'obfuscation',
+          regex: /^[^\n]*[\u200B-\u200D\u2060][^\n]*$/gmu,
+        },
+        {
+          category: 'private_key',
+          regex: /-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----[\s\S]+?-----END(?: [A-Z0-9]+)? PRIVATE KEY-----/gu,
+        },
+        {
+          category: 'credential_url',
+          regex: /\bhttps?:\/\/[^\s/:@]+:[^\s/@]+@[^\s]+/giu,
+        },
+        {
+          category: 'credential',
+          regex: /\b(?:sk-(?:proj-|live-|test-)?[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,})\b/gu,
+        },
+        {
+          category: 'credential',
+          regex: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/gu,
+        },
+        {
+          category: 'credential',
+          regex: /\bauthorization[ \t]*:[ \t]*bearer[ \t]+([^\s"'`,;]{8,})/giu,
+          group: 1,
+        },
+        {
+          category: 'credential',
+          regex: /\b(?:пароль|password|secret)[ \t]*[:=][ \t]*((?:"[^"\n]{4,200}")|(?:'[^'\n]{4,200}'))/giu,
+          group: 1,
+        },
+        {
+          category: 'credential',
+          regex: /\b(?:api[_ -]?key|access[_ -]?token|пароль|password|secret)[ \t]*[:=][ \t]*["']?([^\s"'`,;]{8,})/giu,
+          group: 1,
+        },
+        {
+          category: 'health_biometric',
+          regex: /^[^\n]*(?:состояни[ея]\s+здоровья|медицинск(?:ая|ие|ой|ую)\s+(?:карта|данные|информация)|группа\s+крови|инвалидност|заболеван|лечение|биометрическ(?:ие|ая)\s+данн|образец\s+голоса|голосов\w*\s+идентификац)[^\n]*$/gimu,
+        },
+        {
+          category: 'health_biometric',
+          regex: /^[ \t]*(?:(?:[-*>]|#{1,6}|\d+[.)])[ \t]+)?(?:(?:\[(?:\d{1,2}:){1,2}\d{2}\]|(?:\d{1,2}:){1,2}\d{2})[ \t]+)?(?:\*\*)?диагноз[ \t]*(?::|—|-)[^\n]*$/gimu,
+        },
+        {
+          category: 'health_biometric',
+          regex: /^(?=[^\n]*(?<![\p{L}\p{N}_])диагноз(?![\p{L}\p{N}_]))(?=[^\n]*(?:пациент|сотрудник|человек|здоров|медицин|назначен|симптом|болезн|заболеван|лечен|терап))[^\n]*$/gimu,
+        },
+        {
+          category: 'health_biometric',
+          regex: /^(?=[^\n]*\bWHOOP\b)(?=[^\n]*(?:сотрудник|ФИО|имя|персональн|личн))(?=[^\n]*(?:HRV|пульс|сон|восстановлен|нагрузк))[^\n]*$/gimu,
+        },
+        {
+          category: 'confidentiality',
+          regex: /(?:^|\n)[ \t]*((?:СТРОГО[ \t]+)?КОНФИДЕНЦИАЛЬНО|КОММЕРЧЕСКАЯ[ \t]+ТАЙНА|ДЛЯ[ \t]+СЛУЖЕБНОГО[ \t]+ПОЛЬЗОВАНИЯ|НЕ[ \t]+ДЛЯ[ \t]+РАЗГЛАШЕНИЯ|ДСП|NDA|CONFIDENTIAL|INTERNAL[ \t]+ONLY)(?=[ \t]*(?:$|\n|[.!]))/gimu,
+          group: 1,
+        },
+        {
+          category: 'passport',
+          regex: /(?<![\p{L}\p{N}_])(?:паспорт(?:ные[ \t]+данные)?|серия[ \t]+и[ \t]+номер[ \t]+паспорта)[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){9}\d)(?!\d)/giu,
+          group: 1,
+          validate: (raw) => digitsOnly(raw).length === 10,
+        },
+        {
+          category: 'snils',
+          regex: /(?<![\p{L}\p{N}_])СНИЛС[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){10}\d)(?!\d)/giu,
+          group: 1,
+          validate: isValidSnils,
+        },
+        {
+          category: 'payment_card',
+          regex: /(?<![\p{L}\p{N}_])(?:номер[ \t]+карты|банковская[ \t]+карта|карта|card|PAN)[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){12,18}\d)(?!\d)/giu,
+          group: 1,
+          validate: isValidLuhn,
+        },
+        {
+          category: 'bank_account',
+          regex: /(?<![\p{L}\p{N}_])(?:р\/с|расч[ёе]тный[ \t]+сч[ёе]т)[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){19}\d)(?!\d)/giu,
+          group: 1,
+          validate: (raw) => digitsOnly(raw).length === 20,
+        },
+        {
+          category: 'correspondent_account',
+          regex: /(?<![\p{L}\p{N}_])(?:к\/с|корр(?:еспондентский)?[ \t]+сч[ёе]т)[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){19}\d)(?!\d)/giu,
+          group: 1,
+          validate: (raw) => digitsOnly(raw).length === 20,
+        },
+        {
+          category: 'bik',
+          regex: /(?<![\p{L}\p{N}_])БИК[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){8}\d)(?!\d)/giu,
+          group: 1,
+          validate: (raw) => digitsOnly(raw).length === 9,
+        },
+        {
+          category: 'inn',
+          regex: /(?<![\p{L}\p{N}_])ИНН[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){9,11}\d)(?!\d)/giu,
+          group: 1,
+          validate: isValidInn,
+        },
+        {
+          category: 'ogrn',
+          regex: /(?<![\p{L}\p{N}_])(?:ОГРН|ОГРНИП)[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){12,14}\d)(?!\d)/giu,
+          group: 1,
+          validate: isValidOgrn,
+        },
+        {
+          category: 'kpp',
+          regex: /(?<![\p{L}\p{N}_])КПП[ \t]*[:№—-]?[ \t]*((?:\d[ \t\u00a0\u202f-]*){8}\d)(?!\d)/giu,
+          group: 1,
+          validate: (raw) => digitsOnly(raw).length === 9,
+        },
+        {
+          category: 'email',
+          regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,63}\b/giu,
+        },
+        {
+          category: 'phone',
+          regex: /(?<!\d)(?:\+7|8)[\s(.-]*\d{3}[\s).-]*\d{3}[\s.-]*\d{2}[\s.-]*\d{2}(?!\d)/gu,
+        },
+        {
+          category: 'phone',
+          regex: /(?<!\d)(\+(?:\d[ \t\u00a0\u202f().-]*){7,14}\d)(?!\d)/gu,
+          group: 1,
+          validate: (raw) => {
+            const length = digitsOnly(raw).length;
+            return length >= 8 && length <= 15;
+          },
+        },
+        {
+          category: 'ip_address',
+          regex: /\b(?:\d{1,3}\.){3}\d{1,3}\b/gu,
+          validate: isValidIpv4,
+        },
+        {
+          category: 'ip_address',
+          regex: /(?<![\p{L}\p{N}_])(?:IPv6|адрес[ \t]+IPv6)[ \t]*[:—-][ \t]*([0-9A-F:]{2,39})/giu,
+          group: 1,
+          validate: isValidIpv6,
+        },
+        {
+          category: 'person_name',
+          regex: /(?<![\p{L}\p{N}_])(?:ФИО|имя|контактное[ \t]+лицо|сотрудник|сотрудница|кандидат|участник(?:[ \t]+встречи)?|спикер|генеральный[ \t]+директор|финансовый[ \t]+директор|директор|ФД|contact|name|employee)[ \t]*[:—-][ \t]*((?:(?:[А-ЯЁ][а-яё-]+|[А-ЯЁ]{2,})(?:[ \t]+(?:[А-ЯЁ][а-яё-]+|[А-ЯЁ]{2,})){1,3})|(?:(?:[A-Z][a-z'-]+|[A-Z]{2,})(?:[ \t]+(?:[A-Z][a-z'-]+|[A-Z]{2,})){1,3}))/giu,
+          group: 1,
+        },
+        {
+          category: 'birth_date',
+          regex: /(?<![\p{L}\p{N}_])(?:дата[ \t]+рождения|д\.?[ \t]*р\.?|DOB|date[ \t]+of[ \t]+birth)[ \t]*[:—-][ \t]*((?:(?:0?[1-9]|[12]\d|3[01])[./-](?:0?[1-9]|1[0-2])[./-](?:19|20)\d{2})|(?:(?:0?[1-9]|[12]\d|3[01])[ \t]+(?:января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ \t]+(?:19|20)\d{2}(?:[ \t]*г\.?)?))/giu,
+          group: 1,
+        },
+        {
+          category: 'social_handle',
+          regex: /(?<![\p{L}\p{N}_])(?:Telegram|Телеграм|TG)[ \t]*[:—-][ \t]*(@[A-Za-z0-9_]{5,32})/giu,
+          group: 1,
+        },
+        {
+          category: 'address',
+          regex: /(?<![\p{L}\p{N}_])(?:домашний[ \t]+адрес|адрес[ \t]+регистрации|адрес[ \t]+проживания|место[ \t]+жительства|home[ \t]+address|residential[ \t]+address)[ \t]*[:—-][ \t]*([^\n]{5,200})/giu,
+          group: 1,
+        },
+        {
+          category: 'organization',
+          regex: /(?<![\p{L}\p{N}_])(?:клиент|компания|контрагент|организация)[ \t]*[:—-][ \t]*((?:(?:ООО|АО|ПАО|АНО|НКО|ИП)[ \t]+)?(?:«[^»\n]{2,80}»|"[^"\n]{2,80}"))/giu,
+          group: 1,
+        },
+        {
+          category: 'financial_amount',
+          regex: new RegExp(`(?<![\\p{L}\\p{N}_])((?:от[ \\t]+)?${FINANCIAL_NUMBER_SOURCE}(?:[ \\t]+(?:до|[–—-])[ \\t]*${FINANCIAL_NUMBER_SOURCE})?[ \\t]*${FINANCIAL_MAGNITUDE_SOURCE}[ \\t]*${CURRENCY_SOURCE})(?![\\p{L}\\p{N}_])`, 'giu'),
+          group: 1,
+        },
+        {
+          category: 'financial_amount',
+          regex: new RegExp(`(?<![\\p{L}\\p{N}_])${FINANCIAL_KEYWORD_SOURCE}(?![\\p{L}\\p{N}_])[^\\n\\d]{0,80}?((?:от[ \\t]+)?${FINANCIAL_NUMBER_SOURCE}(?:[ \\t]+(?:до|[–—-])[ \\t]*${FINANCIAL_NUMBER_SOURCE})?[ \\t]*${FINANCIAL_MAGNITUDE_SOURCE})(?![\\p{L}\\p{N}_])`, 'giu'),
+          group: 1,
+        },
+        {
+          category: 'financial_amount',
+          regex: /\b(?:выручк[аиу]?|оборот|прибыл[ьи]?|EBITDA|ARR|MRR|денежн(?:ый|ого)[ \t]+поток|себестоимост[ьи]?|расход[ыа]?|долг|остаток|зарплат[аы]?|бюджет|план|факт)\b[ \t:=—-]{0,20}((?:\d{1,3}(?:[ \u00a0\u202f]\d{3})+|\d+)(?:[.,]\d+)?[ \t]*(?:тыс\.?|млн|миллион(?:а|ов)?|млрд|миллиард(?:а|ов)?)?[ \t]*(?:₽|руб(?:\.|лей|ля)?|RUB|USD|EUR|\$|€))/giu,
+          group: 1,
+        },
+        {
+          category: 'financial_amount',
+          regex: /(?<![\p{L}\p{N}_])(?:выручк[аиу]?|оборот|прибыл[ьи]?|убыт(?:ок|ка)|EBITDA|ARR|MRR|денежн(?:ый|ого)[ \t]+поток|себестоимост[ьи]?|расход[ыа]?|долг|остаток|зарплат[аы]?|бюджет)(?![\p{L}\p{N}_])[ \t|:=—-]{1,30}([−–—-]?[ \t]*(?:(?:\d{1,3}(?:[ \u00a0\u202f]\d{3})+|\d{4,})(?:[.,]\d+)?(?:[ \t]*(?:тыс\.?|млн|миллион(?:а|ов)?|млрд|миллиард(?:а|ов)?))?|\d+(?:[.,]\d+)?[ \t]*(?:тыс\.?|млн|миллион(?:а|ов)?|млрд|миллиард(?:а|ов)?)))(?=[ \t|,.;)]|$)(?![ \t]*%)/gimu,
+          group: 1,
+        },
+        {
+          category: 'financial_amount',
+          regex: /(?<![\d])((?:\d{1,3}(?:[ \u00a0\u202f]\d{3})+|\d{4,})(?:[.,]\d+)?\s*(?:тыс\.?|млн|миллион(?:а|ов)?|млрд|миллиард(?:а|ов)?)?\s*(?:₽|руб(?:\.|лей|ля)?|RUB|USD|EUR|\$|€))/giu,
+          group: 1,
+        },
+      ];
+
+      if (mode === 'strict' || mode === 'reporting') {
+        definitions.push(
+          {
+            category: 'organization',
+            regex: /(?<![\p{L}\p{N}_])((?:ООО|АО|ПАО|АНО|НКО|ИП)\s+(?:«[^»\n]{2,80}»|"[^"\n]{2,80}"|[А-ЯЁ][^\n,.;]{2,60}))/gu,
+            group: 1,
+          },
+          {
+            category: 'organization',
+            regex: /(?<![\p{L}\p{N}_])(?:[Кк]омпани(?:я|и|ю|е)|[Кк]линик(?:а|и|у|е)|[Сс]томатологи(?:я|и|ю|е))[ \t]+([А-ЯЁA-Z][\p{L}\p{N}._-]{2,80})(?![\p{L}\p{N}_])/gu,
+            group: 1,
+          },
+          {
+            category: 'date',
+            regex: /\b(?:0?[1-9]|[12]\d|3[01])[./-](?:0?[1-9]|1[0-2])[./-](?:19|20)\d{2}\b|\b(?:19|20)\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])\b|(?<!\d)(?:0?[1-9]|[12]\d|3[01])[ \t]+(?:января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ \t]+(?:19|20)\d{2}(?:[ \t]*г\.?)?/giu,
+          },
+          {
+            category: 'percentage',
+            regex: /(?<![\d])\d{1,3}(?:[.,]\d+)?\s*%/gu,
+          },
+          {
+            category: 'percentage',
+            regex: /(?<![\d])\d{1,3}(?:[.,]\d+)?[ \t]+(?:на[ \t]+[\p{L}-]{2,30}[ \t]+)?процент(?:а|ов)?(?![\p{L}\p{N}_])/giu,
+          },
+          {
+            category: 'percentage',
+            regex: new RegExp(`(?<![\\p{L}\\p{N}_])${RUSSIAN_PERCENT_WORD_SOURCE}[ \\t]+процент(?:а|ов)?(?![\\p{L}\\p{N}_])`, 'giu'),
+          },
+        );
+      }
+      return definitions;
+    }
+
+    function removeOverlaps(candidates) {
+      const rank = (left, right) => {
+        const severityDifference = SEVERITY_RANK[CATEGORY_META[right.category][1]] - SEVERITY_RANK[CATEGORY_META[left.category][1]];
+        if (severityDifference !== 0) return severityDifference;
+        const lengthDifference = (right.end - right.start) - (left.end - left.start);
+        if (lengthDifference !== 0) return lengthDifference;
+        return left.start - right.start;
+      };
+      const positioned = [...candidates].sort((left, right) => left.start - right.start || left.end - right.end);
+      const accepted = [];
+
+      function resolveCluster(cluster) {
+        const localAccepted = [];
+        for (const candidate of cluster.sort(rank)) {
+          const overlaps = localAccepted.some((item) => candidate.start < item.end && candidate.end > item.start);
+          if (!overlaps) localAccepted.push(candidate);
+        }
+        accepted.push(...localAccepted);
+      }
+
+      let cluster = [];
+      let clusterEnd = -1;
+      for (const candidate of positioned) {
+        if (cluster.length > 0 && candidate.start >= clusterEnd) {
+          resolveCluster(cluster);
+          cluster = [];
+          clusterEnd = -1;
+        }
+        cluster.push(candidate);
+        clusterEnd = Math.max(clusterEnd, candidate.end);
+      }
+      if (cluster.length > 0) resolveCluster(cluster);
+      return accepted.sort((left, right) => left.start - right.start);
+    }
+
+    function normalizeKey(value) {
+      return String(value).normalize('NFKC').trim().replace(/\s+/gu, ' ').toLocaleLowerCase('ru-RU');
+    }
+
+    function randomHex(bytes) {
+      const data = new Uint8Array(bytes);
+      if (root.crypto && typeof root.crypto.getRandomValues === 'function') root.crypto.getRandomValues(data);
+      else for (let index = 0; index < data.length; index += 1) data[index] = Math.floor(Math.random() * 256);
+      return [...data].map((value) => value.toString(16).padStart(2, '0')).join('').toUpperCase();
+    }
+
+    function createSessionId() {
+      if (root.crypto && typeof root.crypto.randomUUID === 'function') return root.crypto.randomUUID();
+      const hex = randomHex(16).toLocaleLowerCase('en-US');
+      return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-a${hex.slice(17, 20)}-${hex.slice(20)}`;
+    }
+
+    function checksum8(value) {
+      let hash = 2166136261;
+      for (const character of String(value)) {
+        hash ^= character.codePointAt(0);
+        hash = Math.imul(hash, 16777619);
+      }
+      return (hash >>> 0).toString(16).padStart(8, '0').slice(-2).toUpperCase();
+    }
+
+    function makeOpaqueToken(sessionTag, category, entityNumber, surfaceNumber) {
+      const body = `DP2:${sessionTag}:${TOKEN_CODES[category] || 'CUSTOM'}:${String(entityNumber).padStart(4, '0')}:A${String(surfaceNumber).padStart(2, '0')}`;
+      return `⟦${body}:${checksum8(body)}⟧`;
+    }
+
+    function amountRange(raw) {
+      const compact = String(raw).replace(/[\u00a0\u202f\s]/gu, '').replace(',', '.');
+      const numericMatch = compact.match(/\d+(?:\.\d+)?/u);
+      if (!numericMatch) return 'диапазон скрыт';
+      let amount = Number(numericMatch[0]);
+      if (/млрд|миллиард/iu.test(raw)) amount *= 1_000_000_000;
+      else if (/млн|миллион/iu.test(raw)) amount *= 1_000_000;
+      else if (/тыс|тысяч/iu.test(raw)) amount *= 1_000;
+
+      const currency = /(?:USD|\$)/iu.test(raw)
+        ? '$'
+        : /(?:EUR|€)/iu.test(raw)
+          ? '€'
+          : /(?:₽|руб|RUB)/iu.test(raw)
+            ? '₽'
+            : 'ден. ед.';
+      const ranges = [
+        [1_000, '< 1 тыс.'],
+        [10_000, '1–10 тыс.'],
+        [50_000, '10–50 тыс.'],
+        [100_000, '50–100 тыс.'],
+        [500_000, '100–500 тыс.'],
+        [1_000_000, '500 тыс.–1 млн'],
+        [5_000_000, '1–5 млн'],
+        [10_000_000, '5–10 млн'],
+        [50_000_000, '10–50 млн'],
+        [100_000_000, '50–100 млн'],
+        [500_000_000, '100–500 млн'],
+        [1_000_000_000, '500 млн–1 млрд'],
+      ];
+      const range = ranges.find(([limit]) => amount < limit);
+      return `${range ? range[1] : '≥ 1 млрд'} ${currency}`;
+    }
+
+    function buildReplacementFactory(mode, sessionTag) {
+      const counters = new Map();
+      const mapping = new Map();
+      const replacementRows = new Map();
+      const vaultEntries = new Map();
+      const financialItems = [];
+
+      function create(match) {
+        if (mode === 'reporting' && ['financial_amount', 'percentage', 'date'].includes(match.category)) {
+          if (match.category !== 'date') {
+            financialItems.push({
+              literal: match.raw,
+              category: match.category,
+              start: match.start,
+              end: match.end,
+              contextChecksum: checksum8(`${match.start}:${match.raw}`),
+            });
+          }
+          return match.raw;
+        }
+
+        const key = `${match.category}:${match.identityKey || normalizeKey(match.raw)}`;
+        let entry = mapping.get(key);
+        if (mode === 'reporting') {
+          if (!entry) {
+            const next = (counters.get(match.category) || 0) + 1;
+            counters.set(match.category, next);
+            entry = { entityNumber: next, surfaces: new Map() };
+            mapping.set(key, entry);
+          }
+          const surfaceKey = normalizeKey(match.raw);
+          let surface = entry.surfaces.get(surfaceKey);
+          if (!surface) {
+            const surfaceNumber = entry.surfaces.size + 1;
+            const token = makeOpaqueToken(sessionTag, match.category, entry.entityNumber, surfaceNumber);
+            surface = { token, visible: token, surfaceNumber };
+            entry.surfaces.set(surfaceKey, surface);
+            const meta = CATEGORY_META[match.category];
+            replacementRows.set(token, {
+              category: match.category,
+              label: meta[0],
+              severity: meta[1],
+              pseudonym: token,
+              count: 0,
+            });
+            vaultEntries.set(token, {
+              token,
+              category: match.category,
+              entityId: `${TOKEN_CODES[match.category] || 'CUSTOM'}:${String(entry.entityNumber).padStart(4, '0')}`,
+              surfaceId: `A${String(surfaceNumber).padStart(2, '0')}`,
+              original: match.raw,
+              normalizedIdentity: match.identityKey || normalizeKey(match.raw),
+              count: 0,
+            });
+          }
+          replacementRows.get(surface.token).count += 1;
+          vaultEntries.get(surface.token).count += 1;
+          return surface.visible;
+        }
+
+        if (!entry) {
+          const next = (counters.get(match.category) || 0) + 1;
+          counters.set(match.category, next);
+          const token = `${TOKEN_NAMES[match.replacementType] || TOKEN_NAMES[match.category]}_${String(next).padStart(2, '0')}`;
+          const visible = match.category === 'financial_amount' && mode === 'balanced'
+            ? `[${token}: ~ ${amountRange(match.raw)}]`
+            : `[${token}]`;
+          entry = { token, visible };
+          mapping.set(key, entry);
+          const meta = CATEGORY_META[match.category];
+          replacementRows.set(token, {
+            category: match.category,
+            label: meta[0],
+            severity: meta[1],
+            pseudonym: visible,
+            count: 0,
+          });
+          vaultEntries.set(visible, {
+            token: visible,
+            category: match.category,
+            entityId: `${TOKEN_CODES[match.category] || 'CUSTOM'}:${String(next).padStart(4, '0')}`,
+            surfaceId: 'A01',
+            original: match.raw,
+            normalizedIdentity: match.identityKey || normalizeKey(match.raw),
+            count: 0,
+          });
+        }
+        replacementRows.get(entry.token).count += 1;
+        vaultEntries.get(entry.visible).count += 1;
+        return entry.visible;
+      }
+
+      function rows() {
+        return [...replacementRows.values()].map((row) => ({ ...row }));
+      }
+
+      function vaultRows() {
+        return [...vaultEntries.values()].map((entry) => ({ ...entry }));
+      }
+
+      function financialIntegrity() {
+        return {
+          mode: mode === 'reporting' ? 'preserve' : 'masked',
+          detected: financialItems.length,
+          preserved: financialItems.length,
+          items: financialItems.map((item) => ({ ...item })),
+        };
+      }
+
+      return { create, rows, vaultRows, financialIntegrity };
+    }
+
+    function aggregateFindings(matches, replacements) {
+      const byCategory = new Map();
+      for (const match of matches) {
+        if (!byCategory.has(match.category)) {
+          const meta = CATEGORY_META[match.category];
+          byCategory.set(match.category, {
+            category: match.category,
+            label: meta[0],
+            severity: meta[1],
+            blocksTransfer: meta[2],
+            reason: meta[3],
+            count: 0,
+            pseudonyms: [],
+          });
+        }
+        byCategory.get(match.category).count += 1;
+      }
+      for (const row of replacements) {
+        const finding = byCategory.get(row.category);
+        if (finding && !finding.pseudonyms.includes(row.pseudonym)) finding.pseudonyms.push(row.pseudonym);
+      }
+      return [...byCategory.values()].sort((left, right) => {
+        const severityDifference = SEVERITY_RANK[right.severity] - SEVERITY_RANK[left.severity];
+        return severityDifference || left.label.localeCompare(right.label, 'ru');
+      });
+    }
+
+    function scan(source, options) {
+      if (typeof source !== 'string') throw new TypeError('Для проверки нужен текст.');
+      if (source.length > MAX_TEXT_CHARS) throw new RangeError('Текст слишком большой. Максимум — 5 МБ.');
+      const requestedMode = options && typeof options.mode === 'string' ? options.mode : 'reporting';
+      const mode = requestedMode === 'strict' || requestedMode === 'balanced' ? requestedMode : 'reporting';
+      const sessionId = options && typeof options.sessionId === 'string' ? options.sessionId : createSessionId();
+      const sessionTag = options && typeof options.sessionTag === 'string'
+        ? options.sessionTag.toLocaleUpperCase('en-US').replace(/[^A-F0-9]/gu, '').slice(0, 4).padEnd(4, '0')
+        : randomHex(2);
+      if (source.length === 0) {
+        const emptyResult = {
+          schemaVersion: '1.0',
+          mode,
+          session: { id: sessionId, tag: sessionTag, tokenProtocol: 'DP2' },
+          sourceRisk: 'LOW',
+          decision: 'ALLOW',
+          findings: [],
+          sanitizedText: '',
+          replacements: [],
+          financialIntegrity: { mode: mode === 'reporting' ? 'preserve' : 'masked', detected: 0, preserved: 0, unchanged: true },
+          metrics: { characters: 0, words: 0, findings: 0, replacements: 0, residualWarnings: 0 },
+        };
+        Object.defineProperty(emptyResult, '_vault', {
+          value: { schemaVersion: 'dp-vault-payload/1', sessionId, sessionTag, mode, entries: [], financialItems: [] },
+          enumerable: false,
+        });
+        return emptyResult;
+      }
+
+      const transcriptSpeakers = findTranscriptSpeakers(source);
+      const fullPersonMentions = findRussianPersonMentions(source);
+      const personIdentities = [...transcriptSpeakers, ...fullPersonMentions];
+      const candidates = [
+        ...personIdentities,
+        ...findSpeakerAliases(source, personIdentities),
+        ...findStrongSingleNameMentions(source, personIdentities),
+        ...detectorDefinitions(mode).flatMap((definition) => findWithRegex(source, definition)),
+      ];
+      const matches = removeOverlaps(candidates);
+      const replacementFactory = buildReplacementFactory(mode, sessionTag);
+      const replacementsByMatch = matches.map((match) => ({ ...match, replacement: replacementFactory.create(match) }));
+      const sanitizedParts = [];
+      let sourceCursor = 0;
+      for (const match of replacementsByMatch) {
+        sanitizedParts.push(source.slice(sourceCursor, match.start), match.replacement);
+        sourceCursor = match.end;
+      }
+      sanitizedParts.push(source.slice(sourceCursor));
+      const sanitizedText = sanitizedParts.join('');
+
+      const replacements = replacementFactory.rows();
+      const findings = aggregateFindings(matches, replacements);
+      const highestSeverity = findings.reduce((highest, finding) => (
+        SEVERITY_RANK[finding.severity] > SEVERITY_RANK[highest] ? finding.severity : highest
+      ), 'medium');
+      const hasFindings = findings.length > 0;
+      const blocksTransfer = findings.some((finding) => finding.blocksTransfer);
+      const decision = blocksTransfer ? 'BLOCK' : hasFindings ? 'REVIEW' : 'ALLOW';
+      const sourceRisk = hasFindings ? RISK_BY_SEVERITY[highestSeverity] : 'LOW';
+      const residualPatterns = [
+        /-----BEGIN(?: [A-Z0-9]+)? PRIVATE KEY-----/u,
+        /\bsk-(?:proj-|live-|test-)?[A-Za-z0-9_-]{20,}\b/u,
+        /\b(?:authorization\s*:\s*bearer)\s+[^\s]+/iu,
+      ];
+      const residualWarnings = residualPatterns.filter((pattern) => pattern.test(sanitizedText)).length
+        + (findTranscriptSpeakers(sanitizedText).length > 0 ? 1 : 0)
+        + (findRussianPersonMentions(sanitizedText).length > 0 ? 1 : 0)
+        + (findStrongSingleNameMentions(sanitizedText, []).length > 0 ? 1 : 0);
+
+      const fullFinancialIntegrity = replacementFactory.financialIntegrity();
+      const result = {
+        schemaVersion: '1.0',
+        mode,
+        session: { id: sessionId, tag: sessionTag, tokenProtocol: 'DP2' },
+        sourceRisk: residualWarnings > 0 ? 'CRITICAL' : sourceRisk,
+        decision: residualWarnings > 0 ? 'BLOCK' : decision,
+        findings,
+        sanitizedText,
+        replacements,
+        financialIntegrity: {
+          mode: fullFinancialIntegrity.mode,
+          detected: fullFinancialIntegrity.detected,
+          preserved: fullFinancialIntegrity.preserved,
+          unchanged: fullFinancialIntegrity.detected === fullFinancialIntegrity.preserved,
+        },
+        metrics: {
+          characters: source.length,
+          words: (source.trim().match(/\S+/gu) || []).length,
+          findings: matches.length,
+          replacements: replacements.length,
+          residualWarnings,
+        },
+      };
+      Object.defineProperty(result, '_vault', {
+        value: {
+          schemaVersion: 'dp-vault-payload/1',
+          sessionId,
+          sessionTag,
+          mode,
+          tokenProtocol: 'DP2',
+          entries: replacementFactory.vaultRows(),
+          financialItems: fullFinancialIntegrity.items,
+        },
+        enumerable: false,
+      });
+      return result;
+    }
+
+    function buildSafeReport(result, metadata) {
+      if (!result || typeof result.sanitizedText !== 'string') throw new TypeError('Нет результата проверки.');
+      const suppliedName = metadata && typeof metadata.sourceName === 'string' ? metadata.sourceName : '';
+      const extension = suppliedName.toLocaleLowerCase('ru-RU').match(/\.(txt|md)$/u)?.[1];
+      const sourceName = extension ? `Загруженный ${extension.toLocaleUpperCase('ru-RU')}` : 'Вставленный текст';
+      return {
+        schemaVersion: '1.0',
+        generatedAt: new Date().toISOString(),
+        source: { name: sourceName, persisted: false },
+        mode: result.mode,
+        session: result.session ? { ...result.session } : null,
+        sourceRisk: result.sourceRisk,
+        decision: result.decision,
+        metrics: { ...result.metrics },
+        financialIntegrity: result.financialIntegrity ? { ...result.financialIntegrity } : null,
+        findings: result.findings.map((finding) => ({ ...finding, pseudonyms: [...finding.pseudonyms] })),
+        replacements: result.replacements.map((replacement) => ({ ...replacement })),
+        sanitizedText: result.sanitizedText,
+        notice: 'Автоматическая проверка не заменяет правовое основание, договорные меры и проверку уполномоченным сотрудником.',
+      };
+    }
+
+    function requireWebCrypto() {
+      if (!root.crypto || !root.crypto.subtle || typeof root.crypto.getRandomValues !== 'function') {
+        throw new Error('Web Crypto недоступен. Откройте файл в актуальной версии Edge или Chrome.');
+      }
+      return root.crypto;
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = '';
+      for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+        binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+      }
+      return root.btoa(binary);
+    }
+
+    function base64ToBytes(value) {
+      const binary = root.atob(String(value));
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+      return bytes;
+    }
+
+    async function sha256Hex(value) {
+      const webCrypto = requireWebCrypto();
+      const digest = await webCrypto.subtle.digest('SHA-256', new TextEncoder().encode(String(value)));
+      return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function deriveVaultKey(password, salt, iterations) {
+      const webCrypto = requireWebCrypto();
+      const material = await webCrypto.subtle.importKey(
+        'raw',
+        new TextEncoder().encode(password),
+        'PBKDF2',
+        false,
+        ['deriveKey'],
+      );
+      return webCrypto.subtle.deriveKey(
+        { name: 'PBKDF2', hash: 'SHA-256', salt, iterations },
+        material,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt'],
+      );
+    }
+
+    async function encryptVault(vaultPayload, password, sourceText) {
+      if (!vaultPayload || vaultPayload.schemaVersion !== 'dp-vault-payload/1') throw new TypeError('Нет локального словаря для шифрования.');
+      if (typeof password !== 'string' || password.length < 12) throw new Error('Пароль vault должен содержать не менее 12 символов.');
+      const webCrypto = requireWebCrypto();
+      const salt = webCrypto.getRandomValues(new Uint8Array(16));
+      const iv = webCrypto.getRandomValues(new Uint8Array(12));
+      const iterations = 600000;
+      const aad = {
+        schema: 'dp-vault/1',
+        sessionId: vaultPayload.sessionId,
+        sessionTag: vaultPayload.sessionTag,
+        mode: vaultPayload.mode,
+        tokenProtocol: vaultPayload.tokenProtocol,
+        sourceSha256: await sha256Hex(sourceText || ''),
+      };
+      const aadBytes = new TextEncoder().encode(JSON.stringify(aad));
+      const key = await deriveVaultKey(password, salt, iterations);
+      const plaintext = new TextEncoder().encode(JSON.stringify(vaultPayload));
+      const encrypted = await webCrypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: aadBytes, tagLength: 128 }, key, plaintext);
+      return {
+        schema: 'dp-vault/1',
+        createdAt: new Date().toISOString(),
+        kdf: { name: 'PBKDF2-HMAC-SHA-256', iterations, salt: bytesToBase64(salt) },
+        cipher: { name: 'AES-256-GCM', iv: bytesToBase64(iv), tagLength: 128 },
+        aad,
+        ciphertext: bytesToBase64(new Uint8Array(encrypted)),
+      };
+    }
+
+    async function decryptVault(serializedVault, password) {
+      if (typeof password !== 'string' || password.length === 0) throw new Error('Введите пароль vault.');
+      let envelope;
+      try {
+        envelope = typeof serializedVault === 'string' ? JSON.parse(serializedVault) : serializedVault;
+      } catch (_error) {
+        throw new Error('Файл vault не является корректным JSON.');
+      }
+      if (!envelope || envelope.schema !== 'dp-vault/1') throw new Error('Неподдерживаемый формат vault.');
+      if (envelope.kdf?.name !== 'PBKDF2-HMAC-SHA-256' || envelope.cipher?.name !== 'AES-256-GCM') {
+        throw new Error('Неподдерживаемые параметры шифрования vault.');
+      }
+      const webCrypto = requireWebCrypto();
+      const salt = base64ToBytes(envelope.kdf.salt);
+      const iv = base64ToBytes(envelope.cipher.iv);
+      const aadBytes = new TextEncoder().encode(JSON.stringify(envelope.aad));
+      const key = await deriveVaultKey(password, salt, Number(envelope.kdf.iterations));
+      try {
+        const decrypted = await webCrypto.subtle.decrypt(
+          { name: 'AES-GCM', iv, additionalData: aadBytes, tagLength: Number(envelope.cipher.tagLength) || 128 },
+          key,
+          base64ToBytes(envelope.ciphertext),
+        );
+        const payload = JSON.parse(new TextDecoder().decode(decrypted));
+        if (payload.sessionId !== envelope.aad.sessionId || payload.sessionTag !== envelope.aad.sessionTag) {
+          throw new Error('Идентификатор сессии не совпадает.');
+        }
+        return { payload, envelope };
+      } catch (error) {
+        if (error instanceof Error && error.message === 'Идентификатор сессии не совпадает.') throw error;
+        throw new Error('Vault не открыт: неверный пароль или файл был изменён.');
+      }
+    }
+
+    function countOccurrences(text, value) {
+      if (!value) return 0;
+      return String(text).split(String(value)).length - 1;
+    }
+
+    function restoreText(text, vaultPayload) {
+      if (typeof text !== 'string') throw new TypeError('Для восстановления нужен текст ответа ИИ.');
+      if (!vaultPayload || !Array.isArray(vaultPayload.entries)) throw new TypeError('Локальный словарь имеет некорректный формат.');
+      const known = new Map(vaultPayload.entries.map((entry) => [entry.token, entry]));
+      const tokenPattern = /⟦DP2:[^⟧\r\n]{6,160}⟧/gu;
+      const tokens = text.match(tokenPattern) || [];
+      const tokenStarts = (text.match(/⟦DP2:/gu) || []).length;
+      const unknown = [];
+      const invalidChecksum = [];
+      const sessionMismatch = [];
+      const used = new Map();
+
+      for (const token of tokens) {
+        const bodyWithChecksum = token.slice(1, -1);
+        const separator = bodyWithChecksum.lastIndexOf(':');
+        const body = bodyWithChecksum.slice(0, separator);
+        const suppliedChecksum = bodyWithChecksum.slice(separator + 1);
+        if (checksum8(body) !== suppliedChecksum) invalidChecksum.push(token);
+        const parts = body.split(':');
+        if (parts[1] !== vaultPayload.sessionTag) sessionMismatch.push(token);
+        if (!known.has(token)) unknown.push(token);
+        else used.set(token, (used.get(token) || 0) + 1);
+      }
+
+      let restoredText = text;
+      for (const [token, entry] of known) restoredText = restoredText.split(token).join(entry.original);
+
+      const missing = [...known.keys()].filter((token) => !used.has(token));
+      const malformed = Math.max(0, tokenStarts - tokens.length);
+      const financeByLiteral = new Map();
+      for (const item of vaultPayload.financialItems || []) {
+        financeByLiteral.set(item.literal, (financeByLiteral.get(item.literal) || 0) + 1);
+      }
+      let financialExpected = 0;
+      let financialPresent = 0;
+      for (const [literal, expected] of financeByLiteral) {
+        financialExpected += expected;
+        financialPresent += Math.min(expected, countOccurrences(text, literal));
+      }
+
+      const blocked = unknown.length > 0 || invalidChecksum.length > 0 || sessionMismatch.length > 0 || malformed > 0;
+      const review = missing.length > 0 || financialPresent < financialExpected;
+      return {
+        restoredText,
+        status: blocked ? 'BLOCK' : review ? 'REVIEW' : 'OK',
+        summary: {
+          recognized: [...used.values()].reduce((sum, value) => sum + value, 0),
+          uniqueRecognized: used.size,
+          missing: missing.length,
+          unknown: unknown.length,
+          invalidChecksum: invalidChecksum.length,
+          sessionMismatch: sessionMismatch.length,
+          malformed,
+          financialExpected,
+          financialPresent,
+        },
+      };
+    }
+
+    root.NFDLP = Object.freeze({
+      MAX_TEXT_CHARS,
+      scan,
+      buildSafeReport,
+      encryptVault,
+      decryptVault,
+      restoreText,
+      validators: Object.freeze({ isValidInn, isValidSnils, isValidLuhn, isValidOgrn, isValidIpv4, isValidIpv6 }),
+    });
+  }(typeof window !== 'undefined' ? window : globalThis));
+  </script>
+
+  <script id="dlp-ui">
+  (function () {
+    'use strict';
+
+    const MAX_FILE_BYTES = 5 * 1024 * 1024;
+    const ALLOWED_EXTENSIONS = new Set(['txt', 'md']);
+    const ALLOWED_MIME_TYPES = new Set(['', 'text/plain', 'text/markdown', 'text/x-markdown', 'application/octet-stream']);
+    const decisionCopy = Object.freeze({
+      ALLOW: {
+        title: 'Можно передавать',
+        text: 'Настроенные правила не нашли чувствительных данных. Сотрудник всё равно проверяет договорные ограничения клиента.',
+        orb: '✓',
+      },
+      REVIEW: {
+        title: 'Нужна проверка',
+        text: 'Чувствительные фрагменты заменены. Финансовый директор должен проверить очищенный текст перед передачей во внешний ИИ.',
+        orb: '!',
+      },
+      BLOCK: {
+        title: 'Передачу остановить',
+        text: 'Найдены данные красной категории. Очищенный текст — только черновик: нужен отдельный разрешённый контур или решение ответственного.',
+        orb: '×',
+      },
+    });
+    const riskCopy = Object.freeze({ LOW: 'Низкий', MEDIUM: 'Средний', HIGH: 'Высокий', CRITICAL: 'Критический' });
+    const severityCopy = Object.freeze({ medium: 'Средний', high: 'Высокий', critical: 'Критический' });
+    const sampleText = [
+      '# Месячный отчёт — синтетический пример',
+      '',
+      'Клиент: ООО «Тестовый контур»',
+      '[00:12] Иван Тестов: Начинаем отчётную встречу.',
+      'Почта: ivan.testov@example.test',
+      'Телефон: +7 900 000-00-00',
+      '',
+      'Выручка: 12 450 000 ₽',
+      'EBITDA: 18,4%',
+      'Денежный поток улучшился второй месяц подряд.',
+      'Команда согласовала три действия: ускорить сбор дебиторской задолженности, пересмотреть закупки и внедрить еженедельный платёжный календарь.',
+    ].join('\n');
+
+    const elements = {
+      sourceText: document.getElementById('sourceText'),
+      fileInput: document.getElementById('fileInput'),
+      dropZone: document.getElementById('dropZone'),
+      fileMeta: document.getElementById('fileMeta'),
+      charCounter: document.getElementById('charCounter'),
+      modeNote: document.getElementById('modeNote'),
+      runCheck: document.getElementById('runCheck'),
+      clearAll: document.getElementById('clearAll'),
+      loadSample: document.getElementById('loadSample'),
+      inputMessage: document.getElementById('inputMessage'),
+      statusPanel: document.getElementById('statusPanel'),
+      statusOrb: document.getElementById('statusOrb'),
+      decisionTitle: document.getElementById('decisionTitle'),
+      decisionText: document.getElementById('decisionText'),
+      results: document.getElementById('results'),
+      metricRisk: document.getElementById('metricRisk'),
+      metricFindings: document.getElementById('metricFindings'),
+      metricCategories: document.getElementById('metricCategories'),
+      metricWords: document.getElementById('metricWords'),
+      findingsList: document.getElementById('findingsList'),
+      sanitizedText: document.getElementById('sanitizedText'),
+      sensitiveIntegrity: document.getElementById('sensitiveIntegrity'),
+      sensitiveIntegrityValue: document.getElementById('sensitiveIntegrityValue'),
+      sensitiveIntegrityNote: document.getElementById('sensitiveIntegrityNote'),
+      financialIntegrity: document.getElementById('financialIntegrity'),
+      financialIntegrityValue: document.getElementById('financialIntegrityValue'),
+      financialIntegrityNote: document.getElementById('financialIntegrityNote'),
+      tokenIntegrity: document.getElementById('tokenIntegrity'),
+      tokenIntegrityValue: document.getElementById('tokenIntegrityValue'),
+      tokenIntegrityNote: document.getElementById('tokenIntegrityNote'),
+      replacementRows: document.getElementById('replacementRows'),
+      copyResult: document.getElementById('copyResult'),
+      downloadTxt: document.getElementById('downloadTxt'),
+      downloadJson: document.getElementById('downloadJson'),
+      vaultPassword: document.getElementById('vaultPassword'),
+      downloadVault: document.getElementById('downloadVault'),
+      vaultMessage: document.getElementById('vaultMessage'),
+      aiResponseText: document.getElementById('aiResponseText'),
+      vaultFile: document.getElementById('vaultFile'),
+      restorePassword: document.getElementById('restorePassword'),
+      restoreResponse: document.getElementById('restoreResponse'),
+      restoreMessage: document.getElementById('restoreMessage'),
+      restoreOutputCard: document.getElementById('restoreOutputCard'),
+      tokenSummary: document.getElementById('tokenSummary'),
+      restoredText: document.getElementById('restoredText'),
+      copyRestored: document.getElementById('copyRestored'),
+      downloadRestored: document.getElementById('downloadRestored'),
+      printLegalAssessment: document.getElementById('printLegalAssessment'),
+      toast: document.getElementById('toast'),
+    };
+
+    const state = { result: null, restored: null, sourceName: 'Вставленный текст', toastTimer: null };
+
+    function selectedMode() {
+      const selected = document.querySelector('input[name="mode"]:checked');
+      return selected && ['reporting', 'balanced', 'strict'].includes(selected.value) ? selected.value : 'reporting';
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat('ru-RU').format(value);
+    }
+
+    function setMessage(text, type) {
+      elements.inputMessage.textContent = text || '';
+      elements.inputMessage.className = `message${type ? ` is-${type}` : ''}`;
+    }
+
+    function setSecureMessage(element, text, type) {
+      element.textContent = text || '';
+      element.className = `secure-message${type ? ` is-${type}` : ''}`;
+    }
+
+    function showToast(text) {
+      if (state.toastTimer) window.clearTimeout(state.toastTimer);
+      elements.toast.textContent = text;
+      elements.toast.hidden = false;
+      state.toastTimer = window.setTimeout(() => {
+        elements.toast.hidden = true;
+      }, 2800);
+    }
+
+    function updateCounter() {
+      elements.charCounter.textContent = `${formatNumber(elements.sourceText.value.length)} / ${formatNumber(window.NFDLP.MAX_TEXT_CHARS)}`;
+    }
+
+    function resetDecision() {
+      elements.statusPanel.dataset.decision = 'EMPTY';
+      elements.statusOrb.textContent = '?';
+      elements.decisionTitle.textContent = 'Результат появится здесь';
+      elements.decisionText.textContent = 'Добавьте текст и запустите проверку. Инструмент не отправляет исходник на сервер.';
+      elements.results.hidden = true;
+      elements.sanitizedText.value = '';
+      elements.copyResult.disabled = true;
+      elements.downloadTxt.disabled = true;
+      elements.downloadJson.disabled = true;
+      elements.downloadVault.disabled = true;
+      elements.restoreOutputCard.hidden = true;
+      elements.restoredText.value = '';
+      elements.tokenSummary.replaceChildren();
+      setSecureMessage(elements.vaultMessage, '');
+      setSecureMessage(elements.restoreMessage, '');
+      state.result = null;
+      state.restored = null;
+    }
+
+    function renderFindings(findings) {
+      elements.findingsList.replaceChildren();
+      if (findings.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-findings';
+        empty.textContent = 'Настроенные правила не нашли чувствительных фрагментов.';
+        elements.findingsList.append(empty);
+        return;
+      }
+      for (const finding of findings) {
+        const item = document.createElement('div');
+        item.className = 'finding';
+        item.dataset.severity = finding.severity;
+
+        const dot = document.createElement('span');
+        dot.className = 'severity-dot';
+        dot.setAttribute('aria-hidden', 'true');
+
+        const copy = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = finding.label;
+        const reason = document.createElement('span');
+        reason.textContent = finding.reason;
+        copy.append(title, reason);
+
+        const count = document.createElement('span');
+        count.className = 'finding-count';
+        count.textContent = String(finding.count);
+        count.setAttribute('aria-label', `Найдено: ${finding.count}`);
+
+        item.append(dot, copy, count);
+        elements.findingsList.append(item);
+      }
+    }
+
+    function renderReplacements(replacements) {
+      elements.replacementRows.replaceChildren();
+      if (replacements.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 4;
+        cell.textContent = 'Замены не потребовались.';
+        row.append(cell);
+        elements.replacementRows.append(row);
+        return;
+      }
+      for (const replacement of replacements) {
+        const row = document.createElement('tr');
+        const category = document.createElement('td');
+        category.textContent = replacement.label;
+        const pseudonymCell = document.createElement('td');
+        const pseudonym = document.createElement('code');
+        pseudonym.textContent = replacement.pseudonym;
+        pseudonymCell.append(pseudonym);
+        const severity = document.createElement('td');
+        severity.textContent = severityCopy[replacement.severity];
+        const count = document.createElement('td');
+        count.textContent = String(replacement.count);
+        row.append(category, pseudonymCell, severity, count);
+        elements.replacementRows.append(row);
+      }
+    }
+
+    function renderResult(result) {
+      const copy = decisionCopy[result.decision];
+      elements.statusPanel.dataset.decision = result.decision;
+      elements.statusOrb.textContent = copy.orb;
+      elements.decisionTitle.textContent = copy.title;
+      elements.decisionText.textContent = copy.text;
+      elements.metricRisk.textContent = riskCopy[result.sourceRisk];
+      elements.metricFindings.textContent = formatNumber(result.metrics.findings);
+      elements.metricCategories.textContent = formatNumber(result.findings.length);
+      elements.metricWords.textContent = formatNumber(result.metrics.words);
+      elements.sanitizedText.value = result.sanitizedText;
+
+      const residuals = result.metrics.residualWarnings;
+      elements.sensitiveIntegrity.dataset.state = residuals === 0 ? 'ok' : 'block';
+      elements.sensitiveIntegrityValue.textContent = residuals === 0 ? 'Остаточных утечек не найдено' : `Предупреждений: ${residuals}`;
+      elements.sensitiveIntegrityNote.textContent = residuals === 0 ? 'Выбранные значения заменены локально' : 'Экспорт требует повторной проверки';
+
+      const financial = result.financialIntegrity;
+      const preserveMode = financial && financial.mode === 'preserve';
+      elements.financialIntegrity.dataset.state = !preserveMode || financial.unchanged ? 'ok' : 'block';
+      elements.financialIntegrityValue.textContent = preserveMode
+        ? `${financial.preserved} из ${financial.detected} без изменений`
+        : 'Защищены политикой режима';
+      elements.financialIntegrityNote.textContent = preserveMode
+        ? 'Суммы и проценты сохранены посимвольно'
+        : 'Точные значения могут быть заменены';
+
+      const tokenCount = result._vault ? result._vault.entries.length : 0;
+      elements.tokenIntegrity.dataset.state = 'ok';
+      elements.tokenIntegrityValue.textContent = `${tokenCount} устойчивых токенов`;
+      elements.tokenIntegrityNote.textContent = `Сессия ${result.session.tag} · протокол ${result.session.tokenProtocol}`;
+      renderFindings(result.findings);
+      renderReplacements(result.replacements);
+      elements.results.hidden = false;
+      elements.copyResult.disabled = false;
+      elements.downloadTxt.disabled = false;
+      elements.downloadJson.disabled = false;
+      elements.downloadVault.disabled = false;
+    }
+
+    function runCheck() {
+      const text = elements.sourceText.value;
+      if (!text.trim()) {
+        setMessage('Добавьте текст или выберите файл TXT или MD.', 'error');
+        elements.sourceText.focus();
+        return;
+      }
+
+      elements.runCheck.disabled = true;
+      elements.runCheck.textContent = 'Проверяем…';
+      setMessage('Проверяем текст локально…');
+      window.requestAnimationFrame(() => {
+        try {
+          state.result = window.NFDLP.scan(text, { mode: selectedMode() });
+          renderResult(state.result);
+          setMessage(`Проверка завершена: ${decisionCopy[state.result.decision].title.toLocaleLowerCase('ru-RU')}.`, 'success');
+        } catch (error) {
+          resetDecision();
+          setMessage(error instanceof Error ? error.message : 'Не удалось проверить текст. Очистите поле и попробуйте снова.', 'error');
+        } finally {
+          elements.runCheck.disabled = false;
+          elements.runCheck.textContent = 'Проверить через DLP';
+        }
+      });
+    }
+
+    function fileExtension(fileName) {
+      const match = String(fileName).toLocaleLowerCase('ru-RU').match(/\.([^.]+)$/u);
+      return match ? match[1] : '';
+    }
+
+    function validateFile(file) {
+      if (!file) throw new Error('Файл не выбран.');
+      const extension = fileExtension(file.name);
+      if (!ALLOWED_EXTENSIONS.has(extension)) throw new Error('Выберите файл TXT или MD. Другие форматы не обрабатываются.');
+      if (file.size === 0) throw new Error('Файл пуст. Добавьте текст и попробуйте снова.');
+      if (file.size > MAX_FILE_BYTES) throw new Error('Файл слишком большой. Максимум — 5 МБ.');
+      if (!ALLOWED_MIME_TYPES.has(file.type || '')) throw new Error('Тип файла не похож на обычный текст. Сохраните документ как TXT или MD.');
+    }
+
+    async function loadFile(file) {
+      try {
+        validateFile(file);
+        setMessage('Читаем файл локально…');
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        if (bytes.some((byte) => byte === 0)) throw new Error('Файл содержит бинарные данные. Сохраните его как обычный текст UTF-8.');
+        const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes).replace(/^\uFEFF/u, '');
+        if (text.length > window.NFDLP.MAX_TEXT_CHARS) throw new Error('Текст после чтения слишком большой. Максимум — 5 МБ.');
+        elements.sourceText.value = text;
+        state.sourceName = file.name;
+        elements.fileMeta.textContent = `${file.name} · ${formatNumber(file.size)} байт · хранится только в памяти вкладки`;
+        updateCounter();
+        resetDecision();
+        setMessage('Файл готов к проверке.', 'success');
+      } catch (error) {
+        elements.fileInput.value = '';
+        setMessage(error instanceof Error ? error.message : 'Не удалось прочитать файл.', 'error');
+      }
+    }
+
+    function download(name, content, type) {
+      const blob = new Blob([content], { type });
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = name;
+      link.hidden = true;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+    }
+
+    async function copyResult() {
+      if (!state.result) return;
+      try {
+        await navigator.clipboard.writeText(state.result.sanitizedText);
+        showToast('Очищенный текст скопирован');
+      } catch (_error) {
+        elements.sanitizedText.focus();
+        elements.sanitizedText.select();
+        const copied = document.execCommand('copy');
+        showToast(copied ? 'Очищенный текст скопирован' : 'Не удалось скопировать. Выделите текст вручную.');
+      }
+    }
+
+    async function saveEncryptedVault() {
+      if (!state.result || !state.result._vault) return;
+      const password = elements.vaultPassword.value;
+      elements.downloadVault.disabled = true;
+      setSecureMessage(elements.vaultMessage, 'Шифруем словарь локально…');
+      try {
+        const envelope = await window.NFDLP.encryptVault(state.result._vault, password, elements.sourceText.value);
+        const serialized = JSON.stringify(envelope, null, 2);
+        download(`nf-dlp-${state.result.session.tag}.dpvault`, serialized, 'application/json;charset=utf-8');
+        setSecureMessage(elements.vaultMessage, 'Vault зашифрован и подготовлен. Сохраните пароль отдельно.', 'success');
+        showToast('Зашифрованный vault подготовлен');
+      } catch (error) {
+        setSecureMessage(elements.vaultMessage, error instanceof Error ? error.message : 'Не удалось зашифровать vault.', 'error');
+      } finally {
+        elements.downloadVault.disabled = false;
+      }
+    }
+
+    function renderRestoreSummary(summary) {
+      elements.tokenSummary.replaceChildren();
+      const items = [
+        `Распознано токенов: ${summary.recognized}`,
+        `Пропущено сущностей: ${summary.missing}`,
+        `Неизвестных: ${summary.unknown}`,
+        `Повреждённых: ${summary.invalidChecksum + summary.malformed}`,
+        `Финансовые значения: ${summary.financialPresent} из ${summary.financialExpected}`,
+      ];
+      for (const value of items) {
+        const pill = document.createElement('span');
+        pill.className = 'token-pill';
+        pill.textContent = value;
+        elements.tokenSummary.append(pill);
+      }
+    }
+
+    async function restoreResponse() {
+      const responseText = elements.aiResponseText.value;
+      if (!responseText.trim()) {
+        setSecureMessage(elements.restoreMessage, 'Вставьте ответ ИИ с токенами.', 'error');
+        elements.aiResponseText.focus();
+        return;
+      }
+      elements.restoreResponse.disabled = true;
+      setSecureMessage(elements.restoreMessage, 'Проверяем токены и открываем локальный словарь…');
+      try {
+        let vaultPayload;
+        const selectedFile = elements.vaultFile.files && elements.vaultFile.files[0];
+        if (selectedFile) {
+          if (selectedFile.size > 10 * 1024 * 1024) throw new Error('Vault слишком большой. Максимум — 10 МБ.');
+          const serialized = await selectedFile.text();
+          const opened = await window.NFDLP.decryptVault(serialized, elements.restorePassword.value);
+          vaultPayload = opened.payload;
+        } else if (state.result && state.result._vault) {
+          vaultPayload = state.result._vault;
+        } else {
+          throw new Error('Загрузите файл .dpvault или сначала выполните DLP-проверку в этой вкладке.');
+        }
+
+        state.restored = window.NFDLP.restoreText(responseText, vaultPayload);
+        elements.restoredText.value = state.restored.restoredText;
+        renderRestoreSummary(state.restored.summary);
+        elements.restoreOutputCard.hidden = false;
+
+        if (state.restored.status === 'BLOCK') {
+          setSecureMessage(elements.restoreMessage, 'Восстановление выполнено частично: найдены чужие, неизвестные или повреждённые токены. Финальный экспорт требует проверки.', 'error');
+        } else if (state.restored.status === 'REVIEW') {
+          setSecureMessage(elements.restoreMessage, 'Значения восстановлены. Часть исходных токенов или финансовых показателей не присутствует в ответе ИИ — проверьте результат.', 'warning');
+        } else {
+          setSecureMessage(elements.restoreMessage, 'Токены проверены, исходные значения восстановлены локально.', 'success');
+        }
+      } catch (error) {
+        state.restored = null;
+        elements.restoreOutputCard.hidden = true;
+        setSecureMessage(elements.restoreMessage, error instanceof Error ? error.message : 'Не удалось восстановить ответ.', 'error');
+      } finally {
+        elements.restoreResponse.disabled = false;
+      }
+    }
+
+    async function copyRestored() {
+      if (!state.restored) return;
+      try {
+        await navigator.clipboard.writeText(state.restored.restoredText);
+        showToast('Восстановленный текст скопирован');
+      } catch (_error) {
+        elements.restoredText.focus();
+        elements.restoredText.select();
+        const copied = document.execCommand('copy');
+        showToast(copied ? 'Восстановленный текст скопирован' : 'Выделите текст вручную.');
+      }
+    }
+
+    function clearAll() {
+      elements.sourceText.value = '';
+      elements.fileInput.value = '';
+      elements.fileMeta.textContent = 'Файл не выбран. Обработка начнётся только после нажатия кнопки.';
+      state.sourceName = 'Вставленный текст';
+      elements.vaultPassword.value = '';
+      elements.aiResponseText.value = '';
+      elements.vaultFile.value = '';
+      elements.restorePassword.value = '';
+      setMessage('');
+      updateCounter();
+      resetDecision();
+      elements.sourceText.focus();
+    }
+
+    elements.runCheck.addEventListener('click', runCheck);
+    elements.clearAll.addEventListener('click', clearAll);
+    elements.loadSample.addEventListener('click', () => {
+      elements.sourceText.value = sampleText;
+      state.sourceName = 'Синтетический пример.md';
+      elements.fileMeta.textContent = 'Загружен синтетический пример без реальных клиентских данных.';
+      updateCounter();
+      resetDecision();
+      setMessage('Пример готов. Запустите проверку.', 'success');
+    });
+    elements.sourceText.addEventListener('input', () => {
+      updateCounter();
+      if (state.result) resetDecision();
+    });
+    elements.fileInput.addEventListener('change', () => {
+      if (elements.fileInput.files && elements.fileInput.files[0]) loadFile(elements.fileInput.files[0]);
+    });
+    elements.dropZone.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        elements.fileInput.click();
+      }
+    });
+    for (const eventName of ['dragenter', 'dragover']) {
+      elements.dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        elements.dropZone.classList.add('is-dragging');
+      });
+    }
+    for (const eventName of ['dragleave', 'drop']) {
+      elements.dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        elements.dropZone.classList.remove('is-dragging');
+      });
+    }
+    elements.dropZone.addEventListener('drop', (event) => {
+      const file = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files[0] : null;
+      if (file) loadFile(file);
+    });
+    document.querySelectorAll('input[name="mode"]').forEach((input) => {
+      input.addEventListener('change', () => {
+        const mode = selectedMode();
+        elements.modeNote.textContent = mode === 'strict'
+          ? 'Имена и ФИО заменяются псевдонимами. Дополнительно скрываются даты, проценты и названия организаций.'
+          : mode === 'balanced'
+            ? 'Имена спикеров и ФИО заменяются псевдонимами. Точные суммы — диапазонами; даты и проценты остаются для анализа.'
+            : 'Имена, компании и контакты заменяются токенами. Суммы, проценты и финансовые KPI остаются посимвольно без изменений.';
+        if (state.result) resetDecision();
+      });
+    });
+    elements.copyResult.addEventListener('click', copyResult);
+    elements.downloadTxt.addEventListener('click', () => {
+      if (!state.result) return;
+      download('nf-dlp-result.txt', state.result.sanitizedText, 'text/plain;charset=utf-8');
+      showToast('Очищенный TXT подготовлен');
+    });
+    elements.downloadJson.addEventListener('click', () => {
+      if (!state.result) return;
+      const report = window.NFDLP.buildSafeReport(state.result, { sourceName: state.sourceName });
+      download('nf-dlp-report.json', JSON.stringify(report, null, 2), 'application/json;charset=utf-8');
+      showToast('Отчёт JSON подготовлен');
+    });
+    elements.downloadVault.addEventListener('click', saveEncryptedVault);
+    elements.restoreResponse.addEventListener('click', restoreResponse);
+    elements.copyRestored.addEventListener('click', copyRestored);
+    elements.downloadRestored.addEventListener('click', () => {
+      if (!state.restored) return;
+      download('nf-dlp-restored.txt', state.restored.restoredText, 'text/plain;charset=utf-8');
+      showToast('Восстановленный TXT подготовлен');
+    });
+    elements.printLegalAssessment.addEventListener('click', () => window.print());
+
+    updateCounter();
+  }());
+  </script>
+</body>
+</html>
